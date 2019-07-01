@@ -4,4 +4,61 @@
 
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
+  <!-- 过滤器 -->
+  <filter>
+  	<filter-name>EncodeFilter</filter-name>
+  	<filter-class>com.jsu.filter.EncodeFilter</filter-class>
+  </filter>
+  <filter-mapping>
+  	<filter-name>EncodeFilter</filter-name>
+  	<url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+  <!-- servlet -->
+  <servlet>
+  	<servlet-name>VotedServlet</servlet-name>
+  	<servlet-class>com.jsu.servlet.VotedServlet</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>ImageServlet</servlet-name>
+  	<servlet-class>com.jsu.servlet.ImageServlet</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>VoteServlet</servlet-name>
+  	<display-name>VoteServlet</display-name>
+  	<description></description>
+  	<servlet-class>com.jsu.servlet.VoteServlet</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>CheckServlet</servlet-name>
+  	<display-name>CheckServlet</display-name>
+  	<description></description>
+  	<servlet-class>com.jsu.servlet.CheckServlet</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>SignServlet</servlet-name>
+  	<display-name>SignServlet</display-name>
+  	<description></description>
+  	<servlet-class>com.jsu.servlet.SignServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>VotedServlet</servlet-name>
+  	<url-pattern>/voted/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>ImageServlet</servlet-name>
+  	<url-pattern>/image/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>VoteServlet</servlet-name>
+  	<url-pattern>/vote/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>CheckServlet</servlet-name>
+  	<url-pattern>/check/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>SignServlet</servlet-name>
+  	<url-pattern>/sign/*</url-pattern>
+  </servlet-mapping>
 </web-app>

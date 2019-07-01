@@ -35,7 +35,12 @@ public class OptionDaoImpl implements OptionDao {
 
 		return result;
 	}
-	
+	/**
+	 * 获取投票id下面选项
+	 * @param vsId
+	 * @return
+	 * @throws Exception
+	 */
 	public List<VoteOption> getOptionListByVSid(int vsId) throws Exception{
 		String sql = "SELECT * FROM" + DbTable.OPTION + "WHERE " + DbTable.SUBJECT_ID + " = ?";
 		// System.out.println(sql);
@@ -43,14 +48,18 @@ public class OptionDaoImpl implements OptionDao {
 		SqlExcute excute = new SqlExcute(JdbcUtil.getConnection());
 		
 		ResultSet rs = excute.ExecuteQuery(sql, vsId);
-		
+		System.out.println(vsId);
 		List<VoteOption> list = new ArrayList<VoteOption>();
 		while (rs.next()) {
 			list.add(rsToVoteOption(rs));
 		}
 		return list;
 	}
-	
+	/**
+	 * 将最新结果集转成对象
+	 * @param rs
+	 * @return
+	 */
 	private VoteOption rsToVoteOption(ResultSet rs) {
 		VoteOption vo = new VoteOption();
 		try {
@@ -64,6 +73,30 @@ public class OptionDaoImpl implements OptionDao {
 		}
 
 		return vo;
+	}
+	
+	/**
+	 * 根据ID修改选项 不修改vsid值
+	 */
+	@Override
+	public boolean updateOption(List<VoteOption> optionList, Connection conn) throws Exception {
+		SqlExcute excute = new SqlExcute(conn);
+		boolean result = true;
+		String sql = "UPDATE "+ DbTable.OPTION + " SET " + DbTable.OPTION_TITLE + " = ?," + DbTable.OPTION_IMAGE +" = ? WHERE " + DbTable.OPTION_ID + " = ?";
+		for (VoteOption voteOption : optionList) {
+			result = result & excute.ExecuteUpdate(sql, voteOption.getTitle(),voteOption.getImage(),voteOption.getId());
+			excute.closePreparedStatement();
+		}
+		
+		return result;
+	}
+	@Override
+	public boolean deleteOption(int vsId, Connection conn) throws Exception {
+		SqlExcute excute = new SqlExcute(conn);
+		String sql = "DELETE FROM " + DbTable.OPTION + " WHERE " + DbTable.SUBJECT_ID + " = ?";
+		boolean result = excute.ExecuteUpdate(sql, vsId);
+		excute.closePreparedStatement();
+		return result;
 	}
 
 }

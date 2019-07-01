@@ -59,6 +59,19 @@ public class User {
 	public void setVervion(int vervion) {
 		this.vervion = vervion;
 	}
+
+
+
+	public String check() {
+		if(name == null || password == "" || phone == null){
+			return "未提交相关参数";
+		}
+		if(name.equals("") || name.equals("")||phone.equals("")){
+			return "提交了空值";
+		}
+	
+		return null;
+	}
 	
 	
 }
