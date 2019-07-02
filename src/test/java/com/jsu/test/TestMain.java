@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.List;
 
 import com.jsu.dao.impl.SubjectDaoImpl;
+import com.jsu.dao.impl.UserDaoImpl;
+import com.jsu.pojo.User;
 import com.jsu.pojo.VoteOption;
 import com.jsu.pojo.VoteSubject;
 import com.jsu.service.impl.VoteServiceImpl;
@@ -18,13 +20,22 @@ public class TestMain {
 		//testInsert();
 		//TestQuery(22);
 		//testThreadInsert();
-		long s = DateUtil.StringToMilliseconds("2019-07-29");
+		/*long s = DateUtil.StringToMilliseconds("2019-07-29");
 		System.out.println(s);
 		String time= DateUtil.MilinsecondsToStringDate(s);
-		System.out.println(time);
-		
+		System.out.println(time);*/
+		testUSerDao();
 	
 		
+	}
+	
+	private static void testUSerDao(){
+		User user = new User();
+		try {
+			new UserDaoImpl().insertUser(user );
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private static void testDate(String strDate) {

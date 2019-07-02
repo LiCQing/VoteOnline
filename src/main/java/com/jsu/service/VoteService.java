@@ -6,8 +6,8 @@ import com.jsu.pojo.VoteSubject;
 
 public interface VoteService {
 	public boolean addSubject(VoteSubject vs) throws Exception ;
-	public List<VoteSubject> allVoteList(String page,String row)throws Exception;
-	public List<VoteSubject> lookUpVoteList(String key,String page,String row)throws Exception;
+	public List<VoteSubject> allVoteList(int id, String page,String row)throws Exception;
+	public List<VoteSubject> lookUpVoteList(int id, String key,String page,String row)throws Exception;
 	public List<VoteSubject> myVoteList(String userId, String page,String row)throws Exception;
 	public boolean deleteVoteSbjec(int SubjectId) throws Exception;
 	public VoteSubject getSubjetByid(int parseInt) throws Exception;

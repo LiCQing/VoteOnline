@@ -40,6 +40,7 @@
 |:----:|:----------:|:------:|:------:|:------:|
 |查看个人信息	|User/my?|	userServlet|	用户id|	个人中心页面|
 |修改个人信息	|User/info/update?	|userServlet	|用户id，修改内容|	Ajax请求，返回修改后的个人信息|
+|参与投票|Voted/vote?|VotedServlet|投票参数|投票结果/投票展示|
 |查看我的投票|Voted/myvote?|VotedServlet|用户id|我的投票列表Json|
 |查看投票结果	|Voted/result?	|VotedServlet|	投票id|	投票结果页|
 |添加投票	|Voted/add?	|VotedServlet|	投票数据|	投票列表Json|
@@ -171,12 +172,50 @@ servie中控制dao层事务，先删除原有选项，添加现在选项。
 
 3.	请求注册码：Sign/verify 调用 注册码 模块生成注册码返回
 	注册码类
-4.	注册 Sign/register? / 调用service 插入数据到数据库，如果插入失败 
+4.	注册 Sign/register?  ， 先将请求参数手动封装成user类，然后使用user的自检函数（查看参数是否正确）。 调用service 插入数据到数据库，如果插入失败则注册失败。
 注册成功返回登陆页面，注册失败返回注册页面
 
 
 
+7/2
 
+今日任务，登陆/投票
+
+#####  用户模块の登陆
+1.数据校验
+servlet 将 前台页面提交数据 作为 数据库检索参数 ，调用service进行查找封装成User类，且返回。
+
+2.记录状态 
+servlet将 service返回的user类，存储入session中，保证用户会话权限访问正常。
+
+3.保存cookie
+servlet将用户提交的数据，存入cookie。
+
+4.退出
+sign/logout
+将session失效，重定向到登陆页。
+
+
+#####  投票模块の参与投票
+
+|进入投票页面|Vote/view?|VoteServlet|投票id|投票页|
+
+1.获取传递参数 投票id
+2.根据投票id获取 投票信息
+3.渲染  voting.jsp
+
+4.前台提交 投票数据
+5.接收投票数据  从 session 读取用户id
+6.插入数据
+7.展示结果
+
+#####  投票模块の投票结果
+统计每个选项的投票人数，计算比值。
+voted/result?	|VotedServlet|	投票id|	投票结果页
+
+根据投票id，获取item表中对应的选项与统计其数量
+
+##### 前台页面の首页
 
 
 

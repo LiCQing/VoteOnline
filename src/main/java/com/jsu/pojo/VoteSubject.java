@@ -13,6 +13,9 @@ public class VoteSubject {
 	private int status;
 
 	private List<VoteOption> optionList;
+	
+	//附加状态，登陆用户是否已投票
+	private boolean voted;
 
 	public VoteSubject() {
 
@@ -104,6 +107,14 @@ public class VoteSubject {
 
 	public void setType(String type) {
 		this.type = Integer.parseInt(type);
+	}
+
+	public boolean isVoted() {
+		return voted;
+	}
+
+	public void setVoted(boolean voted) {
+		this.voted = voted;
 	}
 
 }

@@ -48,7 +48,7 @@ public class OptionDaoImpl implements OptionDao {
 		SqlExcute excute = new SqlExcute(JdbcUtil.getConnection());
 		
 		ResultSet rs = excute.ExecuteQuery(sql, vsId);
-		System.out.println(vsId);
+		//System.out.println(vsId);
 		List<VoteOption> list = new ArrayList<VoteOption>();
 		while (rs.next()) {
 			list.add(rsToVoteOption(rs));

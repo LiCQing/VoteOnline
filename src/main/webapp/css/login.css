@@ -1,0 +1,135 @@
+label{
+  display: inline-block;
+ /* width: 150px;*/
+  text-align: left;
+  font-size: 22px;
+  margin-top: 10px;
+}
+
+.bodyImg{
+  background-image: url('../img/fond-g.jpg'),url('../img/fond-d.jpg');
+  background-position: left, right;
+  background-repeat: no-repeat, no-repeat;
+	height: 800px;
+}
+a{
+  text-decoration: none;
+}
+
+
+.register_div{
+  padding-left: 10px;
+  padding-top: 10px;
+  /*line-height: 50px;*/
+  width: 400px;
+  margin: auto;
+ /* background-color: black;*/
+  color: #666;
+  /*display: block;*/
+}
+
+.regiser_btn{
+	width: 100px;
+	height: 30px;
+	font-size: 16px;
+	color: #666;
+	margin-left: 5px;
+}
+
+.login_div{
+   padding-left: 10px;
+   padding-top: 10px;
+   line-height: 50px;
+   width: 500px;
+   margin: auto;
+   /* background-color: black;*/
+   color: #666;
+   /*  display: none;*/
+
+ }
+.login_div_2{
+  padding-left: 10px;
+  width: 400px;
+  margin: auto;
+  line-height: 20px;
+  /* background-color: black;*/
+  color: #666;
+  /*  display: none;*/
+
+}
+
+
+
+.input_acc{
+ height: 30px;
+  width: 300px;
+  display: inline-block;
+}
+
+.input_verify{
+ height: 30px;
+  width: 100px;
+  display: inline-block;
+}
+
+.img_verify{
+	height: 30px;
+	width: 100px;
+}
+
+.input_ac{
+  height: 30px;
+  width: 300px;
+  padding-left: 21px;
+  display: inline-block;
+}
+
+.c_submit{
+  width: 160px;height: 30px;font-size: 22px;color: #666;margin-left: 5px;
+}
+.input_agree{
+  height: 30px;
+  font-size: 15px;
+  display: inline-block;
+}
+
+.input_sub{
+  height: 30px;
+  font-size: 22px;
+  color: #666;
+}
+
+span{
+  font-size: 12px;
+  color: #d10709;
+}
+
+.optin_div{
+  width: 300px;height: 600px;float: left;
+  margin-left: 200px;
+}
+.optin_small{
+  margin-top: 50px; margin-left: 100px;
+  width: 200px;
+  height: 20px;
+  font-size: 30px;
+}
+
+
+a:hover{
+  color: #d10709;
+}
+
+.optin_small:hover .login_div {
+  display: block;
+}
+.optin_small:hover .register_div {
+  display: none;
+}
+
+.optin_small a:hover .register_div{
+  display: block;
+}
+.optin_small a:hover .register_div{
+  display: none;
+}
