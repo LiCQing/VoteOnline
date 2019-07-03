@@ -59,10 +59,11 @@ public class VoteServiceImpl implements VoteService {
 	 * @param page
 	 * @param row
 	 * @param key
+	 * @param type 1 所有 2 我的 3 查找
 	 * @return
 	 * @throws Exception
 	 */
-	private List<VoteSubject> voteList(String sql,int userId,String page, String row,String key) throws Exception {
+	private List<VoteSubject> voteList(String sql,int userId,String page, String row,String key,int type) throws Exception {
 		
 		int start = (Integer.parseInt(page) - 1) * Integer.parseInt(row);
 		int end = start + Integer.parseInt(row);
@@ -70,11 +71,15 @@ public class VoteServiceImpl implements VoteService {
 		sql += " LIMIT ?,?";
 		
 		List<VoteSubject> list;
-		if(key!=null && !key.equals("")){
-			list = subjectDao.selectPageSubject(sql, key,start,end);
-		}else{
+		
+		if(type==1){
 			list = subjectDao.selectPageSubject(sql, start,end);
+		}else if(type== 2){
+			list = subjectDao.selectPageSubject(sql,userId, start,end);
+		}else{
+			list = subjectDao.selectPageSubject(sql, key,start,end);
 		}
+		
 		//对获取的list 重新赋值 , 查看当前用户是否已经投票
 		
 		for (VoteSubject voteSubject : list) {
@@ -94,14 +99,14 @@ public class VoteServiceImpl implements VoteService {
 	 * 所有列表
 	 */
 	public List<VoteSubject> allVoteList(int userId,String page,String row) throws Exception{
-		return voteList("SELECT * FROM " + DbTable.SUBJECT +"WHERE " + DbTable.SUBJECT_STATUS + " = " +Status.NOMOR.getStatus(),userId,page,row,null);
+		return voteList("SELECT * FROM " + DbTable.SUBJECT +"WHERE " + DbTable.SUBJECT_STATUS + " = " +Status.NOMOR.getStatus(),userId,page,row,null,1);
 	}
 	/**
 	 * 模糊查找
 	 */
 	@Override
 	public List<VoteSubject> lookUpVoteList(int userId,String key, String page, String row) throws Exception {
-		return voteList("SELECT * FROM " + DbTable.SUBJECT + " WHERE " + DbTable.SUBJECT_STATUS + " = 0 and " +Status.NOMOR.getStatus()+ DbTable.SUBJECT_TITLE +" like ?",userId,page,row,"%"+key+"%");
+		return voteList("SELECT * FROM " + DbTable.SUBJECT + " WHERE " + DbTable.SUBJECT_STATUS + " = " +Status.NOMOR.getStatus() +" and "+ DbTable.SUBJECT_TITLE +" like ?",userId,page,row,"%"+key+"%",3);
 	}
 	/**
 	 * 用户发起的投票
@@ -109,7 +114,7 @@ public class VoteServiceImpl implements VoteService {
 	@Override
 	public List<VoteSubject> myVoteList(String userId, String page, String row) throws Exception {
 		
-		return voteList("SELECT * FROM " + DbTable.SUBJECT + " WHERE "+ DbTable.SUBJECT_STATUS + " = 0 and " +Status.NOMOR.getStatus() + DbTable.USER_ID +" = ?",Integer.parseInt(userId),page,row,null);
+		return voteList("SELECT * FROM " + DbTable.SUBJECT + " WHERE "+ DbTable.SUBJECT_STATUS + " = " +Status.NOMOR.getStatus() +" and " + DbTable.USER_ID +" = ?",Integer.parseInt(userId),page,row,null,2);
 	}
 	/**
 	 * 置投票为删除状态
@@ -162,6 +167,12 @@ public class VoteServiceImpl implements VoteService {
 			JdbcUtil.closeConn(conn);
 		}
 		return result;
+	}
+
+	@Override
+	public List<VoteSubject> getListUserVoted(int userId,int page,int row) throws Exception {
+		
+		return subjectDao.getListUserVoted(userId,(page-1) * row,(page-1) * row + row );
 	}
 	
 

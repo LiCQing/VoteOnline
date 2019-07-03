@@ -139,5 +139,25 @@ public class SubjectDaoImpl implements SubjectDao {
 		excute.closePreparedStatement();
 		return result;
 	}
+	/**
+	 * 获取用户参与过的投票
+	 */
+	@Override
+	public List<VoteSubject> getListUserVoted(int userId,int start, int end) throws Exception {
+		String sql = "SELECT * from vote_subject WHERE "
+				+ "vs_id in ( select vs_id from vote_item where "
+				+ "vu_user_id = ?) and vs_status = 0 limit ?,?";
+		List<VoteSubject> list = new ArrayList<>();
+		SqlExcute excute = new SqlExcute(JdbcUtil.getConnection());
+		ResultSet rs ;
+		try{
+			rs= excute.ExecuteQuery(sql, userId,start,end);
+		while(rs.next()){
+			list.add(rsToVoteSubject(rs));
+		}}finally{
+			excute.closeResource();
+		}
+		return list;
+	}
 
 }

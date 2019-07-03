@@ -1,35 +1,30 @@
 <%@ page language="java" import="java.util.*,com.jsu.pojo.*" contentType="text/html; charset=utf-8"
 	pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%
-	String path = request.getContextPath();
-	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-			+ path + "/";
-%>
 <%@ page isELIgnored="false"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<base href="<%=basePath%>">
+
 	
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>Insert title here</title>
-<script type="text/javascript" src="js/common.js"></script>
-<link rel="stylesheet" href="css/buttons.css">
-<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
-
-		<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-		 crossorigin="anonymous">
-
-<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-		 crossorigin="anonymous"></script>
-<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-<script src="js/ajaxfileupload.js" type="text/javascript"></script>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <style>
+	.option{
+			height: 80px;
+			line-height: 80px;
+			background-color: #F3F3F3;;
+			padding-left: 5%;
+			
+		}
+		
+		.unupload{
+			color: red;
+		}
+		
+		.check{
+		color: green;
+		}
+		
+		.option label{
+			width: 70%;
+		}
 			.addImgDiv {
 				display: none;
 				width: 400px;
@@ -74,8 +69,6 @@
 				transition: all 0.6s;
 				width: 100px;
 			}
-		</style>
-		<style type="text/css">
 			#imageForm {
 				display: none;
 			}
@@ -88,7 +81,6 @@
 				height: 140px;
 				z-index: 999;
 			}
-			
 			img:hover{
 				transform: scale(1.4);
 				z-index: 999;
@@ -97,16 +89,17 @@
 			.DisNone {
 				display: none;
 			}
-		</style>
-	</head>
 
-	<body>
+</style>
+<%@ include file="component/header.jsp" %>
+
+
 		<div class="container">
 			<div class="middle">
 				<div class="title">
-					<h2>添加新投票</h2>
+					<h2>${subject==null?'添加新投票':'修改投票'}</h2>
 				</div>
-
+				<hr>
 				<form id="subjectForm"  id="voteForm" action="${subject==null?'voted/add':'voted/update2' }" method="post">
 					<input type="hidden" name="voteId" value="${subject.id }">
 					<div class="form-group">
@@ -119,8 +112,14 @@
 					<div class="form-group">
 						<label for="exampleInputEmail1">投票类型 </label>
 						<div class="input">
-							<input type="radio" name="voteType" value="1" />单选
-							<input type="radio" name="voteType" value="2" />多选 
+						<c:if test="${subject==null }">
+							<input type="radio" name="voteType" checked value="1" />单选
+						</c:if>
+						<c:if test="${subject!=null }">
+							<input type="radio" name="voteType"  "${subjce.type==1?'checked':''}" value="1" />单选
+						</c:if>
+							
+							<input type="radio" name="voteType"  "${subjce.type==2?'checked':''}" value="2" />多选 
 						</div><!-- /input-group -->
 					</div>
 					
@@ -186,12 +185,14 @@
 					<div class="imgDiv DisNone">
 						<input id="file" onchange="sc(this);loadImg(this)" type="file"/>
 						<input type="button" id=""  onclick="upload(this)"  value="上传">
-						<img src="img/def.jpg" class="thumbnail">
+						<img src="img/def.jpg" class="thumbnail"><i class="fa fa-check"></i>
 					</div>
 				</div>
 				
 			</div>
 		</div>
+		
+<%@ include file="component/footer.jsp" %>
 
 	</body>
 
@@ -206,8 +207,37 @@
 		//初始准备
 		$(document).ready(function() {
 			
+			//提交
 			$("#submit").click(function(){
-				$("#voteForm").submit();
+				var flg=true;
+				if($("input[name=voteTitle]").val()==''){
+					alert("投票名不能为空");
+					return;
+				}
+				
+				if($(".unupload").length > 0){
+					alert("图片未上传/或未完成");
+					return;
+				}
+				
+				if($("input[name=url]").length > 0 && $("input[name=url]").length != $("input[name=option]").length){
+					alert("图片数量与选项数量不符");
+					return;
+				}
+				
+				$("input[name=option]").each(function(i,item){
+					console.log(item);
+					if(!flg){
+						return ;
+					}
+					
+					if($(item).val()==''){
+						alert("请把选项填写完整");
+						flg=false ;
+					}
+				});
+				
+				$("#subjectForm").submit();
 			})
 
 			$(".weChatImg").click(function() {
@@ -235,11 +265,14 @@
 		//图片实时预览
 		 function loadImg(e) {
 			 $(e).siblings("img").attr('src', URL.createObjectURL($(e)[0].files[0]));
-			 console.log($(e).siblings("img"));
-			 console.log( URL.createObjectURL($(e)[0].files[0]));
+			 $(e).siblings("i").remove();
+			 $(e).after("<i class='unupload fa fa-exclamation'></i> ");
+			 
+			 /*console.log($(e).siblings("img"));
+			 console.log( URL.createObjectURL($(e)[0].files[0]));*/
 		}
 		
-		 //插入图片
+		 //点击插入图片
 		 function addImg(btn){
 			 var option = $("#op" + btn.id);
 			 var imgDiv = option.find(".imgDiv");
@@ -247,6 +280,7 @@
 			 //改变btn的名字
 			 if(btn.innerHTML=="删除图片"){
 				 btn.innerHTML="插入图片";
+				 option.find("input[name=url]").remove();
 				 imgDiv.hide();
 				 }
 			else{
@@ -258,34 +292,34 @@
 
 		function addOption() {
 			var options = $("input[name=option]");
+			console.log(options);
+			
+			
 			if (options.length != 0) {
 				if (options.last().val() == "" || options.last().val() == null) {
 					alert("请填写上一项");
 					return;
 				}
 			}
-
+	
 			if (options.length >= 10) {
 				alert("最多填写10项哦,如需增加,请扫码支付！");
 				$(".weChatImg").show();
 				return;
 			}
-
-			/*var option = "<div id='op" + optionNum + "' class='optionClass'> 选项:  <input type='text' name='option' />" +
-				"<input  type='button' onclick='pop(" + optionNum + ")' value='插入图片' />" +
-				"<img  class='DisNone'>" +
-				"<input type='button' id='" + optionNum + "'  value='删除' onclick='delOption(this)'></div> ";
-			*/
 			
 			var option = $("#opdef").clone();
 			option.removeClass("DisNone");
 			//console.log(option);
 			option.attr("id","op"+optionNum);
 			var input = option.find("#option");//[0].attr("name","option");
-			input.attr("name","optin");
+			input.attr("name","option");
+			
+			console.log(input[0]);
+			
 			
 			option.find("button").each(function(i,item){
-				console.log(item);
+				//console.log(item);
 				item.id=optionNum;
 				//item.attr("id",optionNum);
 			});
@@ -296,6 +330,7 @@
 			var file = option.find("input[type=file]");
 			file.attr("id","file"+optionNum);
 			
+			console.log(option[0]);
 			addBut.before(option);
 			
 			optionNum++;
@@ -359,24 +394,25 @@
 					if (data != "fasle") {
 						var urlArr = data.split(',');
 
-						var result = '';
+						/*var result = '';
 						result += "<img src='" + urlArr[0] + "' width='100px'>";
 						$("#imageForm").append(result);
-
+*/
 						//加入图片
-						var op = $("#op" + insertId);
-						var img = op.children("img");
+						var op = $("#op" + btn.id);
+						/*var img = op.children("img");
 						img.css("display", "block");
-						img.attr("src", urlArr[0]);
+						img.attr("src", urlArr[0]);*/
 
 						//加入图片名字
 						console.log(urlArr[1]);
 						var imageUrl = "<input type='hidden' value='" + urlArr[1] + "' name='url' />";
 						op.append(imageUrl);
-
+						op.find("i").remove();
+						$(btn).after("<i class='check fa fa-check'></i>");
 
 					} else {
-						alert("添加失败");
+						/*alert("添加失败");*/
 
 					}
 

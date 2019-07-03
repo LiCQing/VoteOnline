@@ -22,13 +22,20 @@ public class TestUrl {
 			System.out.println(voteSubject);
 		}*/
 		
-		VoteItem item = new VoteItem();
+		/*VoteItem item = new VoteItem();
 		item.setSubjecId("656");
 		item.setUserId("1");
 		
 		//System.out.println(UrlUtil.getUriOfMiddle("check/username/1354"));
 		boolean exits = new ItemDaoImpl().exits(item );
-		System.out.println(exits);
+		System.out.println(exits);*/
+		
+		VoteService voteService =new VoteServiceImpl();
+		 List<VoteSubject> list = voteService.allVoteList(1, "1", "10");
+		 for (VoteSubject voteSubject : list) {
+			 System.out.println(voteSubject.getTitile() + voteSubject.isVoted());
+		}
+		
 	}
 	
 	

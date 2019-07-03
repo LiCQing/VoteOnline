@@ -108,6 +108,7 @@ public class ImageServlet extends HttpServlet {
 			out.close();
 		}
 	}
+	
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse

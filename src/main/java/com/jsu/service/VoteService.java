@@ -12,4 +12,5 @@ public interface VoteService {
 	public boolean deleteVoteSbjec(int SubjectId) throws Exception;
 	public VoteSubject getSubjetByid(int parseInt) throws Exception;
 	public boolean updateSubject(VoteSubject subjet) throws Exception;
+	List<VoteSubject> getListUserVoted(int userId, int page, int row) throws Exception;
 } 

@@ -1,41 +1,21 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%
-	String path = request.getContextPath();
-	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-			+ path + "/";
-%>
+
 <%@ page isELIgnored="false"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<base href="<%=basePath%>">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>Insert title here</title>
-<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
-<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
-<script type="text/javascript" src="js/common.js"></script>
-<link
-	href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
-	rel="stylesheet">
-
-<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-<script
-	src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<!-- <script src="js/jquery-3.2.1.min.js"></script> -->
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
 <script src="js/login.js"></script>
-<link
-	href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-	rel="stylesheet">
 <link rel="stylesheet" href="css/login.css">
-<link
-	href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-	rel="stylesheet">
-</head>
-<body>
-	<div class="container bodyImg" style="">
+	
+	
+<%@ include file="component/header.jsp" %>
+
+
+	<div class="container middle"  >
 		<hr>
 		<ul id="myTab" class="nav nav-tabs" style="margin-left: 300px;">
 			<li class="${regError == null?'active':''}"><a href="#login"    data-toggle="tab"> 用户登陆</a></li>
@@ -99,6 +79,9 @@
 			</div>
 		</div>
 	</div>
+	
+	<%@ include file="component/footer.jsp" %>
+	
 	<script>
 		
 		$(function() {

@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import com.jsu.en.Status;
 import com.jsu.pojo.User;
 import com.jsu.service.UserService;
@@ -74,9 +76,11 @@ public class SignServlet extends HttpServlet {
 	private void login(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String name = request.getParameter("name");
 		String pass = request.getParameter("pass");
+		pass = DigestUtils.md5Hex(pass); //转md5加密
 		User user = service.login(name,pass);
 		if(user==null){
 			request.setAttribute("loginError", "登陆失败，账号或密码错误");
+			System.out.println("登陆失败");
 			request.getRequestDispatcher("/sign.jsp").forward(request, response);
 			
 		}else if(user.getStatus() == Status.DELETE.getStatus()){
@@ -127,8 +131,10 @@ public class SignServlet extends HttpServlet {
 
 	private User enToUser(HttpServletRequest request) {
 		User user = new User();
+		String pass = request.getParameter(AttrRequest.USER_PWD);
+		pass = DigestUtils.md5Hex(pass); //转md5加密
 		user.setName(request.getParameter(AttrRequest.USER_NAME));
-		user.setPassword(request.getParameter(AttrRequest.USER_PWD));
+		user.setPassword(pass);
 		user.setPhone(request.getParameter(AttrRequest.USER_PHONE));
 		
 		return user;

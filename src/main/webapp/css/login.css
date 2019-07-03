@@ -6,12 +6,6 @@ label{
   margin-top: 10px;
 }
 
-.bodyImg{
-  background-image: url('../img/fond-g.jpg'),url('../img/fond-d.jpg');
-  background-position: left, right;
-  background-repeat: no-repeat, no-repeat;
-	height: 800px;
-}
 a{
   text-decoration: none;
 }

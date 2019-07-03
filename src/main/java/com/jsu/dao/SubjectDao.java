@@ -17,4 +17,5 @@ public interface SubjectDao {
 	
 	public boolean delVoteSubject(int subjectId)throws Exception;
 	public boolean updateSubject(VoteSubject vs, Connection conn) throws Exception;
+	public List<VoteSubject> getListUserVoted(int userId, int page, int row)throws Exception;
 }

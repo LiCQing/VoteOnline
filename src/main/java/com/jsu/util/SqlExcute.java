@@ -28,7 +28,7 @@ public class SqlExcute {
     private Object Execute(int type, String sql, Object... param)
 			throws Exception {
     	
-    //	System.out.println(sql);
+    	//System.out.println(sql);
     	
 		int result = 0;
 

@@ -21,6 +21,7 @@ import com.jsu.service.impl.VoteServiceImpl;
 import com.jsu.util.AttrRequest;
 import com.jsu.util.AttrSesion;
 import com.jsu.util.DateUtil;
+import com.jsu.util.JsonUtils;
 import com.jsu.util.UrlUtil;
 
 /**
@@ -58,6 +59,8 @@ public class VotedServlet extends HttpServlet {
 				voting(request,response);
 			}else if(distribute.equals("result")){
 				getResult(request,response);
+			}else if(distribute.equals("myvote")){
+				getMyJionVote(request,response);
 			}
 
 		} catch (Exception e) {
@@ -69,6 +72,32 @@ public class VotedServlet extends HttpServlet {
 		// ").append(request.getContextPath());
 
 	}
+	/**
+	 * 查看我参与的投票
+	 * @param request
+	 * @param response
+	 * @throws Exception 
+	 * @throws NumberFormatException 
+	 */
+	private void getMyJionVote(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		User user = (User)request.getSession().getAttribute(AttrSesion.CURRENT_USER);
+		if(user==null){
+			throw new RuntimeException();
+		}
+		String page = request.getParameter(AttrRequest.LIST_PAGE);
+		String row = request.getParameter(AttrRequest.LIST_ROW);
+		
+		page = page==null?"1":page;
+		row = row==null?"10":row;
+		
+		List<VoteSubject> list = service.getListUserVoted(user.getId(), Integer.parseInt(page), Integer.parseInt(row));
+		
+		PrintWriter out = response.getWriter();
+		out.print(JsonUtils.objectToJson(list));
+		out.close();
+		
+	}
+
 	/**
 	 * 查看投票结果
 	 * @param request
@@ -104,8 +133,8 @@ public class VotedServlet extends HttpServlet {
 		User user = (User) request.getSession().getAttribute(AttrSesion.CURRENT_USER);
 		
 		//测试用户id
-		user = new User();
-		user.setId(1);
+		/*user = new User();
+		user.setId(1);*/
 		
 		item.setUserId(user.getId());
 		if(!item.check()){
@@ -180,7 +209,11 @@ public class VotedServlet extends HttpServlet {
 	 */
 	private void addHannler(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		VoteSubject subject=encapsulationToSubjet(request);
-		service.addSubject(subject);
+		if(service.addSubject(subject)){
+			response.sendRedirect(request.getContextPath()+"/my.jsp");
+		}else{
+			response.sendRedirect(request.getContextPath()+"/error.jsp");
+		}
 
 	}
 	/**
@@ -189,9 +222,16 @@ public class VotedServlet extends HttpServlet {
 	 * @return
 	 */
 	private VoteSubject encapsulationToSubjet(HttpServletRequest request){
+		User user = (User)request.getSession().getAttribute(AttrSesion.CURRENT_USER);
+		if(user == null){
+			return null;
+		}
+		
 		VoteService service = new VoteServiceImpl();
+		
 		// 封装投票
 		VoteSubject subject = new VoteSubject();
+		subject.setUserId(user.getId());
 		//id
 		String id = request.getParameter(AttrRequest.SUBJECT_ID);
 		if(id != null && !id.equals("")){
@@ -205,7 +245,7 @@ public class VotedServlet extends HttpServlet {
 		subject.setEnd(end);
 		// 类型
 		subject.setType(request.getParameter(AttrRequest.SUBJECT_TYPE));
-
+		
 		// 封装选项
 		String[] values = request.getParameterValues(AttrRequest.SUBJECT_OPTION);
 		String[] imgUrl = request.getParameterValues(AttrRequest.IMG_URL);

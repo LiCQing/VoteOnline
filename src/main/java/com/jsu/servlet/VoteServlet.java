@@ -73,7 +73,7 @@ public class VoteServlet extends HttpServlet {
 		String page = request.getParameter(AttrRequest.LIST_PAGE);
 		String row = request.getParameter(AttrRequest.LIST_ROW);
 		page = page == null ? "1" : page;
-		row = row == null ? "10" : row;
+		row = row == null ? "12" : row;
 
 		String my = request.getParameter(AttrRequest.LIST_MYVOTE);
 		String lookup = request.getParameter(AttrRequest.LIST_LOOKUP);
@@ -82,12 +82,14 @@ public class VoteServlet extends HttpServlet {
 		//如果当前用户未登陆，设置不存在的id，以免报错
 		if(user == null){
 			user= new User();
-			user.setId(-1);
+			user.setId(-1);  //测试id 正常-1
 		}
 		List<VoteSubject> list;
 		if (my != null && user != null) {
+			System.out.println("请求我的列表");
 			// 查看我的列表
 			list = voteService.myVoteList(user.getId()+"", page, row);
+			System.out.println(user.getName() +" 发起数 " + list.size());
 
 		} else if (lookup != null) {
 			// 查询列表
@@ -96,6 +98,11 @@ public class VoteServlet extends HttpServlet {
 			// 返回所有列表
 			list = voteService.allVoteList(user.getId(),page, row);
 		}
+		
+		for (VoteSubject voteSubject : list) {
+			System.out.println(voteSubject.getTitile() + voteSubject.isVoted());
+		}
+		
 		
 		String str=request.getParameter("Callback");
 		

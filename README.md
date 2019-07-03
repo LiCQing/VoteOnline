@@ -217,6 +217,7 @@ voted/result?	|VotedServlet|	投票id|	投票结果页
 
 ##### 前台页面の首页
 
+### 7/3 继续前台 
 
 
 

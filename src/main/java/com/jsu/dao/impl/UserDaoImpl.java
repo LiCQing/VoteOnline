@@ -64,6 +64,7 @@ public class UserDaoImpl implements UserDao{
 	@Override
 	public User getUserById(String name, String pass) throws Exception {
 		String sql = "SELECT * FROM " + DbTable.USER + " WHERE " + DbTable.USER_NAME + "  =? and " + DbTable.USER_PASSWORD + " = ?";
+		System.out.println(sql+"  " + name + " " + pass);
 		SqlExcute excute = new SqlExcute(JdbcUtil.getConnection());
 		ResultSet rs = excute.ExecuteQuery(sql, name,pass);
 		User user = new User();
