@@ -16,7 +16,11 @@ public class VoteSubject {
 	
 	//附加状态，登陆用户是否已投票
 	private boolean voted;
-
+	//附加状态 , 获取一个选项图片
+	private String url;
+	//附加
+	private int count;
+	
 	public VoteSubject() {
 
 	}
@@ -80,10 +84,12 @@ public class VoteSubject {
 		this.optionList = optionList;
 	}
 
+	
+
 	@Override
 	public String toString() {
-		return "VoteSubject [id=" + id + ", titile=" + titile + ", type=" + type + ", end=" + end + ", status=" + status
-				+ ", optionList=" + printList() + "]";
+		return "VoteSubject [id=" + id + ", userId=" + userId + ", titile=" + titile + ", type=" + type + ", end=" + end
+				+ ", status=" + status +  ", voted=" + voted + ", url=" + url + "]" + printList();
 	}
 
 	private String printList() {
@@ -115,6 +121,22 @@ public class VoteSubject {
 
 	public void setVoted(boolean voted) {
 		this.voted = voted;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
 	}
 
 }

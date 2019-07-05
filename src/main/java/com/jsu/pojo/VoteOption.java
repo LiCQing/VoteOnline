@@ -7,6 +7,9 @@ public class VoteOption {
 	private int order;
 	private String image;
 	
+	//用户是否选择该选项
+	private boolean voted;
+	
 	//选择统计
 	private long Count;
 	
@@ -65,6 +68,14 @@ public class VoteOption {
 	public String toString() {
 		return "VoteOption [id=" + id + ", title=" + title + ", subjectId=" + subjectId + ", order=" + order
 				+ ", image=" + image + ", Count=" + Count + "]";
+	}
+
+	public boolean isVoted() {
+		return voted;
+	}
+
+	public void setVoted(boolean voted) {
+		this.voted = voted;
 	}
 	
 	

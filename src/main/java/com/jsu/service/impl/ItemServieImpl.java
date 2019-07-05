@@ -30,5 +30,9 @@ public class ItemServieImpl implements ItemService {
 	public long countNum(int id) throws Exception {
 		return itemdao.countSomeOption(id);
 	}
+	@Override
+	public boolean exitsOption(int userid, int optionid) throws Exception {
+		return itemdao.exitsUserAndOption(userid,optionid);
+	}
 
 }

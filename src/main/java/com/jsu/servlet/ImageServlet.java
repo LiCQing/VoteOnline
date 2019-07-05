@@ -24,13 +24,10 @@ import com.jsu.util.JsonUtils;
  */
 public class ImageServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private String FTP_IP="192.168.139.128";
 	private int FTP_PORT=21;
 	private String FTP_USERNAME="ftpuser";
 	private String	FTP_PASSWORD="ftpuser";
 	private String BASE_PATH="/home/ftpuser/www/images";
-	
-	private String PIC_BASE_URL="http://192.168.139.128/images/";
 	
 
 	/**
@@ -86,7 +83,7 @@ public class ImageServlet extends HttpServlet {
 				System.out.println(fileName);
 				// 服务器存放文件路径
 				//上传到服务器
-				FtpUtil.uploadFile(FTP_IP, FTP_PORT, FTP_USERNAME, FTP_PASSWORD, BASE_PATH, filePath, fileName,
+				FtpUtil.uploadFile(FtpUtil.IP, FTP_PORT, FTP_USERNAME, FTP_PASSWORD, BASE_PATH, filePath, fileName,
 						fileItem.getInputStream());
 				
 				fileItem.delete();
@@ -95,7 +92,7 @@ public class ImageServlet extends HttpServlet {
 		}
 		
 		filePath  += "/" + fileName;
-		String name = PIC_BASE_URL + filePath;
+		String name = FtpUtil.IMAGE_URL + filePath;
 		System.out.println(name);
 		out.print(name + "," + filePath);
 		

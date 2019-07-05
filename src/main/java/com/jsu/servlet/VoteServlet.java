@@ -13,6 +13,7 @@ import com.jsu.pojo.User;
 import com.jsu.pojo.VoteSubject;
 import com.jsu.service.VoteService;
 import com.jsu.service.impl.VoteServiceImpl;
+import com.jsu.to.PageResult;
 import com.jsu.util.AttrRequest;
 import com.jsu.util.AttrSesion;
 import com.jsu.util.JsonUtils;
@@ -73,7 +74,7 @@ public class VoteServlet extends HttpServlet {
 		String page = request.getParameter(AttrRequest.LIST_PAGE);
 		String row = request.getParameter(AttrRequest.LIST_ROW);
 		page = page == null ? "1" : page;
-		row = row == null ? "12" : row;
+		row = row == null ? "8" : row;
 
 		String my = request.getParameter(AttrRequest.LIST_MYVOTE);
 		String lookup = request.getParameter(AttrRequest.LIST_LOOKUP);
@@ -84,39 +85,39 @@ public class VoteServlet extends HttpServlet {
 			user= new User();
 			user.setId(-1);  //测试id 正常-1
 		}
-		List<VoteSubject> list;
+		PageResult result = null;
 		if (my != null && user != null) {
 			System.out.println("请求我的列表");
 			// 查看我的列表
-			list = voteService.myVoteList(user.getId()+"", page, row);
-			System.out.println(user.getName() +" 发起数 " + list.size());
+			result = voteService.myVoteList(user.getId()+"", page, row);
+			//System.out.println(user.getName() +" 发起数 " + list.size());
 
 		} else if (lookup != null) {
 			// 查询列表
-			list = voteService.lookUpVoteList(user.getId(),lookup, page, row);
+			result = voteService.lookUpVoteList(user.getId(),lookup, page, row);
 		} else {
 			// 返回所有列表
-			list = voteService.allVoteList(user.getId(),page, row);
+			result = voteService.allVoteList(user.getId(),page, row);
 		}
 		
-		for (VoteSubject voteSubject : list) {
-			System.out.println(voteSubject.getTitile() + voteSubject.isVoted());
+		for (Object voteSubject : result.getList()) {
+			System.out.println(voteSubject);
 		}
 		
-		
+		//System.out.println(list);
+		//回调函数
 		String str=request.getParameter("Callback");
 		
 		//response.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
 
-		String json = JsonUtils.objectToJson(list);
+		String json = JsonUtils.objectToJson(result);
 		
 		 if (str==null||str.equals("")) {
 	        } else {
 	            json =  str + "(" + json + ")";
 	        }
 		
-		// System.out.println(json);
 		out.print(json);
 
 	}

@@ -66,11 +66,41 @@ public class SignServlet extends HttpServlet {
 			}else if(url.equals("logout")){
 				 request.getSession().invalidate();
 				 response.sendRedirect(request.getContextPath()+"/sign.jsp");
+			}else if(url.equals("changePass")){
+				 changePass(request,response);
+			}else if(url.equals("checkPass")){
+				 checkPass(request,response);
 			}
 		}catch (Exception e){
 			response.sendRedirect(request.getContextPath()+"/error.jsp");
 		}
 		
+	}
+
+	private void checkPass(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String pass = request.getParameter("pass");
+		pass = DigestUtils.md5Hex(pass);
+		User user = (User)request.getSession().getAttribute(AttrSesion.CURRENT_USER);
+		String oldPass = user.getPassword();
+		PrintWriter out = response.getWriter();
+		if(oldPass.equals(pass)){
+			out.print("true");
+		}else{
+			out.print("原始密码不正确");
+		}
+	}
+
+	private void changePass(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String newPass = request.getParameter("pass");
+		newPass = DigestUtils.md5Hex(newPass);
+		User user = (User)request.getSession().getAttribute(AttrSesion.CURRENT_USER);
+		user.setPassword(newPass);
+		PrintWriter out = response.getWriter();
+		if(service.updatePass(user)){
+			out.print("修改成功");
+		}else{
+			out.print("修改失败");
+		}
 	}
 
 	private void login(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -79,13 +109,15 @@ public class SignServlet extends HttpServlet {
 		pass = DigestUtils.md5Hex(pass); //转md5加密
 		User user = service.login(name,pass);
 		if(user==null){
-			request.setAttribute("loginError", "登陆失败，账号或密码错误");
+			/*request.setAttribute("loginError", "登陆失败，账号或密码错误");
 			System.out.println("登陆失败");
-			request.getRequestDispatcher("/sign.jsp").forward(request, response);
+			request.getRequestDispatcher("/sign.jsp").forward(request, response);*/
+			response.getWriter().print("登陆失败，账号或密码错误");
 			
 		}else if(user.getStatus() == Status.DELETE.getStatus()){
-			request.setAttribute("loginError", "登陆失败，账号异常");
-			request.getRequestDispatcher("/sign.jsp").forward(request, response);
+			/*request.setAttribute("loginError", "登陆失败，账号异常");
+			request.getRequestDispatcher("/sign.jsp").forward(request, response);*/
+			response.getWriter().print("登陆失败，账号异常");
 		}else{
 			request.getSession().setAttribute(AttrSesion.CURRENT_USER, user);
 			Cookie cname = new Cookie("username", name);
@@ -94,7 +126,8 @@ public class SignServlet extends HttpServlet {
 			cpass.setMaxAge(7 * 24 * 3600);
 			response.addCookie(cname);
 			response.addCookie(cpass);
-			response.sendRedirect(request.getContextPath()+"/index.jsp");
+			response.getWriter().print("true");
+			//response.sendRedirect(request.getContextPath()+"/index.jsp");
 		}
 	}
 

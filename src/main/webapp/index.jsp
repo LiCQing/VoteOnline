@@ -4,16 +4,84 @@
 
 <%@include file="component/header.jsp" %>
 
+ <style>
+ .subject{
+	text-align: center; 
+ }
+ 
+ .voteList{
+ 	
+ }
+ 
+ .leftButton{
+ 	position: fixed;
+ 	left:13%;
+ 	top:50%
+ 
+ }
+ 
+ .rightButton{
+ 	position: fixed;
+ 	right:13%;
+ 	top:50%
+ }
+ 
+ 
+ .title{
+ 	height: 80px;
+ }
+ 
+ .rock_left{
+   animation-name: rock_l;                         /* 动画名称 */
+   animation-duration: 3s;                         /* 动画时长3秒 */
+   animation-timing-function: ease-in-out;         /* 动画速度曲线：以低速开始和结束 */
+	 animation-iteration-count: infinite;            /* 播放次数：无限 */
+ }
+ 
+  .rock_right{
+   animation-name: rock_r;                         /* 动画名称 */
+   animation-duration: 3s;                         /* 动画时长3秒 */
+   animation-timing-function: ease-in-out;         /* 动画速度曲线：以低速开始和结束 */
+	 animation-iteration-count: infinite;            /* 播放次数：无限 */
+ }
+ 
+ 	@keyframes rock_l {
+			    from { opacity: 0.1; left:13%; }                          /* 动画开始时的不透明度 */
+			    50%  { opacity:   1; left:10%; }                          /* 动画50% 时的不透明度 */
+			    to   { opacity: 0.1; left:13%; }                          /* 动画结束时的不透明度 */    
+			}
+	@keyframes rock_r {
+			    from { opacity: 0.1; right:13%; }                          /* 动画开始时的不透明度 */
+			    50%  { opacity:   1; right:10%; }                          /* 动画50% 时的不透明度 */
+			    to   { opacity: 0.1; right:13%; }                          /* 动画结束时的不透明度 */    
+			}
+ 
+ </style>
 
 	<div class="container middle">
+	<div class="row">
+		<div class="col-md-6">
+		    <div class="input-group">
+		      <input type="text" id="keyword" class="form-control" placeholder="Search for...">
+		      <span class="input-group-btn">
+		        <button class="btn btn-default" onclick="searchVote()" type="button">SEARCH</button>
+		      </span>
+		    </div><!-- /input-group -->
+	    </div>
+	    <div class="col-md-6"></div>
+	   </div>
+	    <hr>
 		<div id="voteList">
 			
 		</div>
 		
 		
-		<div class="col-lg-3 " id="voteDef" class="None" >
+		<div class="col-lg-3 None" id="voteDef"  >
 			<img class="img-circle" src="" alt="Generic placeholder image" width="140" height="140">
-			<h2>投票标题</h2>
+			<div class="title">
+				<h4>投票标题</h4>
+			</div>
+			
 			<p class="desc">投票描述，投票人数，截止时间</p>
 			
 			<p><a class="btn btn-default" href="#" role="button">点我参与 »</a></p>
@@ -21,10 +89,17 @@
 			
 		</div><!-- /.col-lg-4 -->
 		
-		<hr>
-
+		
 	</div>
 
+
+	<div class="leftButton rock_left None">
+		<i class="fa fa-angle-double-left fa-5x" aria-hidden="true"></i>
+	</div>
+	<div class="rightButton rock_right None">
+		<i class="fa fa-angle-double-right fa-5x" aria-hidden="true"></i>
+	</div>
+	
 
 <%@ include file="component/footer.jsp" %>
 
@@ -32,34 +107,93 @@
 	<script type="text/javascript">
 		var voteList;
 		var page = 1,
-			row = 12;
+			row = 8;
+		
+		$(".leftButton").click(function(){
+			if(page>1){
+				page--;
+				getVoteListuser("page=" + page + "&row=" + row);	
+			}
+		});
+		
+		$(".rightButton").click(function(){
+				page++;
+				getVoteListuser("page=" + page + "&row=" + row);	
+		});
 
 		//初始准备,加载列表
 		$(document).ready(function() {
 			voteList = $("#voteList");
-			console.log(voteList);
+			//console.log(voteList);
 			getVoteListuser("page=" + page + "&row=" + row);
 		});
 		
-		//渲染数据
-		function test(data) {
-			var n = 0;
+		//搜索
+		var spage = 1;
+		function searchVote(){
+			page=1;
+			var data = Ajax("vote/list","word="+$("#keyword").val()+"&page="+page);
+			var pagedata = eval("(" + data + ")");
+			test(pagedata);	
+		}
+		
+
+		String.prototype.endWith=function(endStr){
+		    var d=this.length-endStr.length;
+		    return (d>=0&&this.lastIndexOf(endStr)==d)
+		  }
+		
+		//渲染投票列表数据
+		function test(pagedata) {
 			
-			var newVote = $("<div class='row'>");
+			console.log(pagedata);
+			
+			//绑定翻页按钮事件
+			if(pagedata.hasNext){
+				$(".rightButton").removeClass("None");
+			}else{
+				$(".rightButton").addClass("None");
+			}
+			
+			if(pagedata.hasPre){
+				$(".leftButton").removeClass("None");
+			}else{
+				$(".leftButton").addClass("None");
+			}
+			
+			
+			var data = pagedata.list;
+			var n = 0;
+			voteList.html("");
+			var newVote = $("<div class='row subject'>");
+			if(data.length==0){
+				voteList.html("<h3>没搜到相关结果，换个关键词试试或者点我<a role='button' onclick='getVoteListuser()'>查看所有<a></h3>");
+			}
 			$.each(data, function(idx, item) {
 				newVote.css("z-index","0");
 				//添加投票到一列
-				var col = $("#voteDef").clone(true);
+				var col = $("#voteDef").clone();
+				//显示
 				col.removeClass("None");
 				col.attr("id","addDiv"+idx); 
 				//设置图片
 				var img=col.find("img");
 				img.attr("src","img/vote.jpg");
+				var imgurl = ""+item.url;
+				if(!imgurl.endWith("null")){
+					console.log(item.url);
+					img.attr("src",item.url);
+				}
+				
 				//设置描述
 				var desc= col.find(".desc");
-				desc.html(item.endDay);
+				var num = "已经有"+ item.count+"人参与，快来看看吧"
+				if(item.count==0){
+					num="还没有人投票呢，快来做第一个投票的人吧";
+				}
+				desc.html("截止时间:" + item.endDay +"<br>"+num);
 				//设置标题
-				var title= col.find("h2");
+				var title= col.find("h4");
 				title.html(item.titile);
 				//设置链接
 				var a= col.find("a");
@@ -79,7 +213,8 @@
 				if(n%4 ==0){
 					voteList.append(newVote);
 					//新建一列
-					newVote = $("<div class='row'>");
+					voteList.append("<hr>");
+					newVote = $("<div class='row subject'>");
 				}
 				 //
 				console.log(voteList);
@@ -87,7 +222,7 @@
 
 		
 			})
-			$("#voteDef").hide();
+			//$("#voteDef").hide();
 		}
 
 		//用户获取投票
@@ -98,6 +233,7 @@
 			//console.log(jsoData);
 			$.ajax({
 				type: "GET",
+				data:data,
 				url: "http://localhost:8080/VoteOnline/vote/list",
 				dataType: "jsonp", //数据类型为jsonp  
 				jsonp: "Callback", //服务端用于接收callback调用的function名的参数  
@@ -110,26 +246,6 @@
 
 		}
 
-		//获取投票列表
-		function getVoteList(data) {
-			voteList = $("#voteList");
-			voteList.html(""); // 清空
-			//转换json
-			var jsoData = Ajax("http://localhost:8080/VoteOnline/vote/list", data);
-			//console.log(jsoData);
-
-			var dataObj = eval("(" + jsoData + ")"); //这里要加上加好括号和双引号的原因我也不知道，就当是json语法，只能死记硬背了
-			$.each(dataObj, function(idx, item) {
-
-				var div = "<div id='" + item.id + "'> " + item.titile +
-					"<a href='voted/update?id=" + item.id + "'> 修改 </a>" +
-					"<button onclick=del(" + item.id + ")> 删除 </button>" +
-					" </div>"
-				voteList.append(div);
-				//console.log(item);   
-			})
-
-		}
 
 		//删除
 		function del(subjectid) {

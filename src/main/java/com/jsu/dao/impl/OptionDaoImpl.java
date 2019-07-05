@@ -9,6 +9,7 @@ import java.util.List;
 import com.jsu.dao.OptionDao;
 import com.jsu.pojo.VoteOption;
 import com.jsu.util.DbTable;
+import com.jsu.util.FtpUtil;
 import com.jsu.util.JdbcUtil;
 import com.jsu.util.SqlExcute;
 
@@ -53,6 +54,8 @@ public class OptionDaoImpl implements OptionDao {
 		while (rs.next()) {
 			list.add(rsToVoteOption(rs));
 		}
+		
+		excute.closeResource();
 		return list;
 	}
 	/**
@@ -64,7 +67,7 @@ public class OptionDaoImpl implements OptionDao {
 		VoteOption vo = new VoteOption();
 		try {
 			vo.setId(rs.getInt(DbTable.OPTION_ID));
-			vo.setImage(rs.getString(DbTable.OPTION_IMAGE));
+			vo.setImage(FtpUtil.IMAGE_URL + rs.getString(DbTable.OPTION_IMAGE));
 			vo.setOrder(rs.getInt(DbTable.OPTION_ORDER));
 			vo.setSubjectId(rs.getInt(DbTable.SUBJECT_ID));
 			vo.setTitle(rs.getString(DbTable.OPTION_TITLE));
@@ -90,6 +93,7 @@ public class OptionDaoImpl implements OptionDao {
 		
 		return result;
 	}
+	
 	@Override
 	public boolean deleteOption(int vsId, Connection conn) throws Exception {
 		SqlExcute excute = new SqlExcute(conn);
@@ -97,6 +101,23 @@ public class OptionDaoImpl implements OptionDao {
 		boolean result = excute.ExecuteUpdate(sql, vsId);
 		excute.closePreparedStatement();
 		return result;
+	}
+	/**
+	 * 加载某个投票中选项的第一张图片
+	 */
+	@Override
+	public String getSomeImg(int id) throws Exception {
+		SqlExcute excute = new SqlExcute(JdbcUtil.getConnection());
+		String sql = "SELECT " +DbTable.OPTION_IMAGE + " FROM " + DbTable.OPTION + " WHERE " + DbTable.SUBJECT_ID + " = ? limit 0,1";
+		ResultSet rs = excute.ExecuteQuery(sql, id);
+		try{
+			if(rs.next()){
+				return rs.getString(DbTable.OPTION_IMAGE);
+			}
+		}finally{
+			excute.closeResource();
+		}
+		return null;
 	}
 
 }

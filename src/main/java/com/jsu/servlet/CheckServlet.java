@@ -29,9 +29,6 @@ public class CheckServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		response.setCharacterEncoding("UTF-8");
-		response.setContentType("text/html;charset=utf-8");
-		
 		String uri = request.getRequestURI();
 		String checkType = UrlUtil.getUriOfMiddle(uri);
 		String data = UrlUtil.getUriOfLast(uri);

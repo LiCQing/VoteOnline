@@ -28,14 +28,14 @@ public class SubjectDaoImpl implements SubjectDao {
 	 */
 	public boolean insertSubject(VoteSubject subject, Connection conn) throws Exception {
 		String sql = "INSERT INTO" + DbTable.SUBJECT + "(" + DbTable.SUBJECT_TITLE + "," + DbTable.SUBJECT_TYPE + ","
-				+ DbTable.SUBJECT_END + ") VALUES (?,?,?)";
+				+ DbTable.SUBJECT_END + "," + DbTable.USER_ID + ") VALUES (?,?,?,?)";
 
 		// 创建执行类
 		SqlExcute excute = new SqlExcute(conn);
 		// 插入投票
 		boolean result = false;
 		try {
-			result = excute.ExecuteUpdate(sql, subject.getTitile(), subject.getType(), subject.getEnd());
+			result = excute.ExecuteUpdate(sql, subject.getTitile(), subject.getType(), subject.getEnd(),subject.getUserId());
 		} finally {
 			excute.closePreparedStatement();
 		}
@@ -158,6 +158,28 @@ public class SubjectDaoImpl implements SubjectDao {
 			excute.closeResource();
 		}
 		return list;
+	}
+
+	@Override
+	public int getTotalPage(String sql, String param, String row) throws Exception {
+		int r = Integer.parseInt(row);
+		SqlExcute excute = new SqlExcute();
+		
+		ResultSet rs;
+		
+		if(param ==null){
+			rs = excute.ExecuteQuery(sql);
+		}else{
+			rs = excute.ExecuteQuery(sql,param);
+		}
+		
+		int total = 0;
+		if(rs.next()){
+			total = rs.getInt("num");
+			total = total % r ==0?total/r:(total/r)+1;
+		}
+		excute.closeResource();
+		return total;
 	}
 
 }

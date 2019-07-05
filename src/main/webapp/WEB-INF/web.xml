@@ -41,6 +41,12 @@
   	<description></description>
   	<servlet-class>com.jsu.servlet.SignServlet</servlet-class>
   </servlet>
+  <servlet>
+  	<servlet-name>ManageServlet</servlet-name>
+  	<display-name>ManageServlet</display-name>
+  	<description></description>
+  	<servlet-class>com.jsu.servlet.ManageServlet</servlet-class>
+  </servlet>
   <servlet-mapping>
   	<servlet-name>VotedServlet</servlet-name>
   	<url-pattern>/voted/*</url-pattern>
@@ -60,5 +66,9 @@
   <servlet-mapping>
   	<servlet-name>SignServlet</servlet-name>
   	<url-pattern>/sign/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>ManageServlet</servlet-name>
+  	<url-pattern>/admini/*</url-pattern>
   </servlet-mapping>
 </web-app>

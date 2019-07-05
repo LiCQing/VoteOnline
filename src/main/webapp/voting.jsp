@@ -35,13 +35,12 @@
 		font-size: 30px;
 	}
 	
-	.selected{
-		background: #888;
-		
-	}
 	
 	.center{
 		text-align: center;
+	}
+	.selected{
+		background: #ccc;
 	}
 	
 	.option:hover{
@@ -64,7 +63,9 @@
 		height:15%;
 		margin: auto;
 	}
-	
+	.havent{
+		font-size: 20px;
+	}
 	
 		
 		@keyframes breath{
@@ -83,8 +84,38 @@
 		transform: scale(1.2);
 	}
 	
+	.overflowBtn{
+		position: fixed;
+		top:60%;
+		right:10%;
+		width:100px;
+		height:100px;
+		border-radius:50%;
+		text-align: center;
+		line-height: 100px;
+		animation: scaleDraw 3s ease-in-out infinite;
+		
+	}
+	
+		@keyframes scaleDraw {  /*定义关键帧、scaleDrew是需要绑定到选择器的关键帧名称*/
+            0%{
+                transform: scale(1);  /*开始为原始大小*/
+            }
+            25%{
+                transform: scale(1.2); /*放大1.1倍*/
+            }
+            50%{
+                transform: scale(1);
+            }
+            75%{
+                transform: scale(1.2);
+            }
+        }
+	
+	
 </style>
 <div class="container middle"> 
+		
 		${Vote_ERR }
 		<div class=row>
 			<div class="col-md-12"><h3>${subject.titile }</h3></div>
@@ -96,25 +127,25 @@
 				
 			</div>
 		</div>
-		
+	
 		
 		<div id="subjec">
 			
 			 <br>
 			
-			<form action="voted/vote" method="post">
+			<form id="voteForm" action="voted/vote" method="post">
 			<input type="hidden" name="subjectId" value="${subject.id }">
 			<div class="row">
 				<c:forEach items="${subject.optionList }" var ="option" varStatus="i">
 						<div id="option${option.id }" class="col-md-3 option" onclick="select(this)">
 								
-								<c:if test="${option.image!=null }">
+								<c:if test="${!fn:contains(option.image, 'null')}">
 									<div class="imgDiv">
-										<img src="http://192.168.139.128/images/${option.image }">
+										<img src="${option.image }">
 									</div>
 								</c:if>
 										
-									<div class="optionDesc">
+									<div class="optionDesc ${!fn:contains(option.image, 'null')?'haveimg':'havent'}">
 									
 											${option.title }
 									</div>
@@ -132,7 +163,6 @@
 				</div>
 				<div class="center topBorder">
 				<br>
-					<input class="submit" type="submit" value="提交">
 				</div>
 				
 			</form>
@@ -140,11 +170,14 @@
 </div>
 
 <%@ include file="component/footer.jsp" %>
-
+<div class="overflowBtn">
+<button class="btn btn-default btn-lg None" type="submit">I WANT YOU</button>
+		</div>
 </body>
 <script type="text/javascript">
 
 $(function(){
+	
 	if($(".imgDiv").length == 0){
 		console.log(111);
 		var options = $('.option');
@@ -155,6 +188,10 @@ $(function(){
 			$(item).find(".pickme").css("height","30%");
 		});
 	}
+	
+	$("button[type=submit]").click(function(){
+		$("#voteForm").submit();
+	});
 	
 	
 });
@@ -176,6 +213,12 @@ function select(option){
 	}else{
 		input.prop('checked', true);
 		pick.addClass("selected");
+	}
+	
+	if($(".selected").length !=0){
+		$(".btn-default").removeClass("None");
+	}else{
+		$(".btn-default").addClass("None");
 	}
 }
 

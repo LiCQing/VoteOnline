@@ -25,8 +25,8 @@
 			<div class="tab-pane fade in active" id="login">
 				<div class="login_div">
 				 ${loginError}
-					<form action="sign/login" method="post"
-						onsubmit="return check_right()" style="position: relative;">
+					<form id="loginForm"    
+						style="position: relative;">
 						<i class="fa fa-user  fa-lg"
 							style="position: absolute; top: 15px; left: 7px; opacity: 0.65"></i>
 						<input class="input_ac" style="margin-left: 2px" name="name"
@@ -39,7 +39,7 @@
 							id="pass_l" type="password" placeholder="输入密码" value="${cookie.userpass.value }" maxlength="12"
 							onfocus="one('l_p_s')"> <span>*</span>
 						<div style="line-height: 30px;">
-							<input class="c_submit" type="submit" value="登陆"> <a
+							<input class="c_submit"  type="button" value="登陆"> <a
 								style="margin-left: 50px">忘记密码</a>
 						</div>
 					</form>
@@ -83,6 +83,29 @@
 	<%@ include file="component/footer.jsp" %>
 	
 	<script>
+		$(".c_submit").click(function(){
+				//sign/login
+				
+				//var form = new FormData($("#loginForm").get(0)); // new FormData($("#loginForm")[0]);
+				var  form = {
+					name:$('#name_l').val(),
+					pass:$('#pass_l').val()
+				}
+				
+				console.log(form);
+				
+				$.post("sign/login",form, function(data){
+					if(data=="true"){
+						location.href="index.jsp";
+					}else{
+						alert(data);
+					}
+					
+				});
+				
+		});
+		
+
 		
 		$(function() {
 			$('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {

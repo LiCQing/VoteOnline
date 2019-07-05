@@ -18,6 +18,7 @@ import com.jsu.service.ItemService;
 import com.jsu.service.VoteService;
 import com.jsu.service.impl.ItemServieImpl;
 import com.jsu.service.impl.VoteServiceImpl;
+import com.jsu.to.PageResult;
 import com.jsu.util.AttrRequest;
 import com.jsu.util.AttrSesion;
 import com.jsu.util.DateUtil;
@@ -51,10 +52,10 @@ public class VotedServlet extends HttpServlet {
 				addHannler(request, response);
 			} else if (distribute.equals("delete")) {
 				delHandler(request, response);
-			} else if(distribute.equals("update")){
+			} else if(distribute.equals("update")){//请求修改页面
 				updateHandler(request,response);
-			}else if(distribute.equals("update2")){
-				updatedHandler(request,response);
+			}else if(distribute.equals("update2")){ //请求修改数据
+				updatedHandler(request,response);  
 			}else if(distribute.equals("vote")){
 				voting(request,response);
 			}else if(distribute.equals("result")){
@@ -88,12 +89,14 @@ public class VotedServlet extends HttpServlet {
 		String row = request.getParameter(AttrRequest.LIST_ROW);
 		
 		page = page==null?"1":page;
-		row = row==null?"10":row;
+		row = row==null?"6":row;
 		
-		List<VoteSubject> list = service.getListUserVoted(user.getId(), Integer.parseInt(page), Integer.parseInt(row));
+		PageResult result = service.getListUserVoted(user.getId(), Integer.parseInt(page), Integer.parseInt(row));
+		//System.out.println(list);
+		
 		
 		PrintWriter out = response.getWriter();
-		out.print(JsonUtils.objectToJson(list));
+		out.print(JsonUtils.objectToJson(result));
 		out.close();
 		
 	}
@@ -115,6 +118,9 @@ public class VotedServlet extends HttpServlet {
 		List<VoteOption> list = subject.getOptionList();
 		for (VoteOption voteOption : list) {
 			voteOption.setCount(itemService.countNum(voteOption.getId()));
+			
+			voteOption.setVoted(itemService.exitsOption(((User) (request.getSession().getAttribute(AttrSesion.CURRENT_USER))).getId(),voteOption.getId()));
+			//System.out.println("是否投票 :" + voteOption.isVoted());
 		}
 		request.setAttribute("subject", subject);
 		request.getRequestDispatcher("/result.jsp").forward(request, response);
@@ -164,6 +170,7 @@ public class VotedServlet extends HttpServlet {
  */
 	private void updatedHandler(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		VoteSubject subjet = encapsulationToSubjet(request);
+		response.sendRedirect(request.getContextPath()+ "my.jsp");
 		service.updateSubject(subjet);
 	}
 	/**

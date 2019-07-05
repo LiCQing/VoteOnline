@@ -3,8 +3,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page isELIgnored="false"%>
 
-	
-<title>Insert title here</title>
+	<title>${subject==null?'添加新投票':'修改投票'}</title>
+
 <style>
 	.option{
 			height: 80px;
@@ -89,6 +89,17 @@
 			.DisNone {
 				display: none;
 			}
+			
+			.wring{
+			animation: wring 2s ease-in-out 0s infinite alternate;
+			}
+			
+			
+			@keyframes wring{
+			  0% {  box-shadow:0 0 0px red,0 0 10px red;}
+			  50%{  box-shadow: 0 0 20px rgba(222,222,254,0.9),0 0 20px rgba(222,222,254,0.9);}
+			 100% {  box-shadow:0 0 0px red ,0 0 10px red;}
+			}
 
 </style>
 <%@ include file="component/header.jsp" %>
@@ -100,12 +111,12 @@
 					<h2>${subject==null?'添加新投票':'修改投票'}</h2>
 				</div>
 				<hr>
-				<form id="subjectForm"  id="voteForm" action="${subject==null?'voted/add':'voted/update2' }" method="post">
+				<form id="subjectForm"   id="voteForm" action="${subject==null?'voted/add':'voted/update2' }" method="post">
 					<input type="hidden" name="voteId" value="${subject.id }">
 					<div class="form-group">
-						<label for="exampleInputEmail1">投票名</label>
+						<label for="exampleInputEmail1">投票名</span></label>
 						<div class="input">
-							<input value="${subject.titile}" name="voteTitle" type="text" class="form-control" placeholder="写点什么吧">
+							<input value="${subject.titile}"  maxlength="20"  name="voteTitle" type="text" class="form-control " placeholder="1-200个字符">
 						</div><!-- /input-group -->
 					</div>
 					
@@ -114,51 +125,87 @@
 						<div class="input">
 						<c:if test="${subject==null }">
 							<input type="radio" name="voteType" checked value="1" />单选
+							<input type="radio" name="voteType" value="2" />多选 
 						</c:if>
-						<c:if test="${subject!=null }">
-							<input type="radio" name="voteType"  "${subjce.type==1?'checked':''}" value="1" />单选
+						<c:if test="${subject.type==1 }">
+							<input type="radio" name="voteType" checked  value="1" />单选
+							<input type="radio" name="voteType" value="2" />多选 
+						</c:if>
+						<c:if test="${subject.type==2 }">
+							<input type="radio" name="voteType"  value="1" />单选
+							<input type="radio" name="voteType" checked  value="2" />多选 
 						</c:if>
 							
-							<input type="radio" name="voteType"  "${subjce.type==2?'checked':''}" value="2" />多选 
 						</div><!-- /input-group -->
 					</div>
 					
 					<div class="form-group">
-						<label for="exampleInputEmail1">截止日期  </label>
+						<label for="exampleInputEmail1">截止日期(当日零点截止)  </label>
 						<div class="input">
-							<input id="endDate" type="date" name="voteEnd" value="${subject.endDay}" />
+							<input id="endDate" onchange="checkTime()" type="date" name="voteEnd" value="${subject.endDay}" />
 						</div><!-- /input-group -->
 					</div>
+					<label for="exampleInputEmail1">选项 </label>
+					<c:if test="${subject==null }">
+								<div class="form-group" id="op0">
+									<div class="input-group below">
+										<input type="text" name="option" maxlength="100" class="form-control" placeholder="写点什么吧">
+										<span class="input-group-btn">
+											<button class="btn btn-default" id="0" onclick="addImg(this)" type="button">插入图片</button>
+											<button class="btn btn-default" id="0" onclick="delOption(this)" type="button">×</button>
+										</span>
+									</div><!-- /input-group -->
+									<div class="imgDiv DisNone">
+										<input id="file0" onchange="sc(this);loadImg(this)" type="file"/>
+										<input type="button" id="0" onclick="upload(this)" value="上传">
+										<img src="img/def.jpg"  class="thumbnail">
+									</div>
+								</div>
+								<div class="form-group" id="op1">
+									<div class="input-group below">
+										<input type="text" name="option"  maxlength="100" class="form-control" placeholder="写点什么吧">
+										<span class="input-group-btn">
+											<button class="btn btn-default" id="1" onclick="addImg(this)" type="button">插入图片</button>
+											<button class="btn btn-default" id="1" onclick="delOption(this)" type="button">×</button>
+										</span>
+									</div><!-- /input-group -->
+									<div class="imgDiv DisNone">
+										<input id="file1"  onchange="sc(this);loadImg(this)" type="file"/>
+										<input type="button" onclick="upload(this)" id="1" value="上传">
+										<img src="img/def.jpg"  class="thumbnail">
+									</div>
+								</div>
+					</c:if>
+					<c:if test="${subject != null }">
+					<c:forEach items="${subject.optionList }" var ="option" varStatus="i">
+							 <div class="form-group" id="op${i.index }">
+										<div class="input-group below">
+											<input type="text" name="option" maxlength="100" class="form-control" value="${option.title }">
+											<span class="input-group-btn">
+												<button class="btn btn-default" id="${i.index }" onclick="addImg(this)" type="button">${option.image==null?'插入图片':'删除图片' }</button>
+												<button class="btn btn-default" id="${i.index }" onclick="delOption(this)" type="button">×</button>
+											</span>
+										</div><!-- /input-group -->
+										<c:if test="${option.image!=null }">
+											<div class="imgDiv">
+											<input name="url" type="hidden" value="${option.image }">
+											<input id="file${i.index }" onchange="sc(this);loadImg(this)" type="file"/>
+											<input type="button" id="${i.index }" onclick="upload(this)" value="上传">
+											<img src="${option.image }"  class="thumbnail">
+										</div>
+										</c:if>
+										<c:if test="${option.image==null }">
+											<div class="imgDiv DisNone">
+											<input id="file${i.index }" onchange="sc(this);loadImg(this)" type="file"/>
+											<input type="button" id="${i.index }" onclick="upload(this)" value="上传">
+											<img src="img/def.jpg"  class="thumbnail">
+										</div>
+										</c:if>
+										
+									</div>
+						</c:forEach>
+					</c:if>
 					
-					<div class="form-group" id="op0">
-						<label for="exampleInputEmail1">选项 </label>
-						<div class="input-group below">
-							<input type="text" name="option" class="form-control" placeholder="写点什么吧">
-							<span class="input-group-btn">
-								<button class="btn btn-default" id="0" onclick="addImg(this)" type="button">插入图片</button>
-								<button class="btn btn-default" id="0" onclick="delOption(this)" type="button">×</button>
-							</span>
-						</div><!-- /input-group -->
-						<div class="imgDiv DisNone">
-							<input id="file0" onchange="sc(this);loadImg(this)" type="file"/>
-							<input type="button" id="0" onclick="upload(this)" value="上传">
-							<img src="img/def.jpg"  class="thumbnail">
-						</div>
-					</div>
-					<div class="form-group" id="op1">
-						<div class="input-group below">
-							<input type="text" name="option" class="form-control" placeholder="写点什么吧">
-							<span class="input-group-btn">
-								<button class="btn btn-default" id="1" onclick="addImg(this)" type="button">插入图片</button>
-								<button class="btn btn-default" id="1" onclick="delOption(this)" type="button">×</button>
-							</span>
-						</div><!-- /input-group -->
-						<div class="imgDiv DisNone">
-							<input id="file1" onchange="sc(this);loadImg(this)" type="file"/>
-							<input type="button" onclick="upload(this)" id="1" value="上传">
-							<img src="img/def.jpg"  class="thumbnail">
-						</div>
-					</div>
 
 					<a id="addButton" role="button" onclick="addOption()" class="button button-glow button-border button-rounded ">添加选项</a>
 					<span >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
@@ -176,7 +223,7 @@
 				
 				<div class="form-group DisNone" id="opdef">
 					<div class="input-group below">
-						<input type="text" id="option"  class="form-control" placeholder="写点什么吧">
+						<input type="text" id="option"  maxlength="100" class="form-control" placeholder="写点什么吧">
 						<span class="input-group-btn">
 							<button class="btn btn-default" id="0" onclick="addImg(this)" type="button">插入图片</button>
 							<button class="btn btn-default" id="0" onclick="delOption(this)" type="button">×</button>
@@ -206,33 +253,43 @@
 
 		//初始准备
 		$(document).ready(function() {
+			//添加输入框获取焦点正常
+			$("input").each(function(i,item){
+				$(item).focus(function(){
+	  				$(item).removeClass("wring");
+			});
+			});
 			
 			//提交
 			$("#submit").click(function(){
 				var flg=true;
 				if($("input[name=voteTitle]").val()==''){
-					alert("投票名不能为空");
+					$("input[name=voteTitle]").addClass("wring");
+					layer.msg('投票标题不能为空');
+					//alert("投票名不能为空");
 					return;
 				}
 				
 				if($(".unupload").length > 0){
-					alert("图片未上传/或未完成");
+					//alert("图片未上传/或未完成");
+					layer.msg('图片未上传/或未完成');
 					return;
 				}
 				
 				if($("input[name=url]").length > 0 && $("input[name=url]").length != $("input[name=option]").length){
-					alert("图片数量与选项数量不符");
+					layer.msg("图片数量与选项数量不符");
 					return;
 				}
 				
 				$("input[name=option]").each(function(i,item){
-					console.log(item);
+					//console.log(item);
 					if(!flg){
 						return ;
 					}
 					
 					if($(item).val()==''){
-						alert("请把选项填写完整");
+						$(item).addClass("wring");
+						layer.msg("选项不能为空");
 						flg=false ;
 					}
 				});
@@ -258,10 +315,24 @@
 				var today = time.getFullYear() + "-" + (month) + "-" + (day);
 				$('#endDate').val(today);
 			}
-			
-			  
                
             });
+		function checkTime(){
+			console.log($('#endDate').val());
+			var startTime = new Date(Date.parse($('#endDate').val() + " 0:0"));
+			var date = new Date();
+			if(!(startTime>date)){
+				layer.msg("时光易逝,请展望未来");
+				var time=date.setDate(date.getDate()+1);
+				time=new Date(time);
+				var day = ("0" + time.getDate()).slice(-2);
+				var month = ("0" + (time.getMonth() + 1)).slice(-2);
+				var today = time.getFullYear() + "-" + (month) + "-" + (day);
+				$('#endDate').val(today);
+			}
+			//$('#endDate').val(today);
+		}
+		
 		//图片实时预览
 		 function loadImg(e) {
 			 $(e).siblings("img").attr('src', URL.createObjectURL($(e)[0].files[0]));

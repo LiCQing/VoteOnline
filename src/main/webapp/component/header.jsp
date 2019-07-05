@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+<%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -18,8 +19,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <!-- <script src="js/jquery-3.2.1.min.js"></script> -->
 <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-
+<script src="tool/layer/layer.js"></script>
 <style>
 
 			body{
@@ -52,9 +52,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			padding-bottom: 50px
 		}
 		
+		.selected{
+			background: #888;
+		
+		}
 		
 		.None{
 			display: none;
+		}
+		
+		.Right{
+			text-align: right;
+		}
+		
+		.center{
+			text-align: center;
 		}
 		
 		.bottomBorder{
@@ -80,6 +92,45 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		 100% {  box-shadow:0 0 0px #FFF ,0 0 10px #FFF  inset;}
 		}
 		
+		.death{
+			 width: 50px;                                    /* 宽度 */
+			    height: 20px;                                    /* 高度 */
+			    background: #CCC; 
+		}
+		
+		.alive {
+			    width: 50px;                                    /* 宽度 */
+			    height: 20px;                                    /* 高度 */
+			    opacity: 0.1;                                   /* 不透明度 */
+			    overflow: hidden;                               /* 溢出隐藏 */
+			    color: #99dd33;                            /* 背景色 */
+			  
+			    /* IE10、Firefox and Opera，IE9以及更早的版本不支持 */
+			    animation-name: breath;                         /* 动画名称 */
+			    animation-duration: 3s;                         /* 动画时长3秒 */
+			    animation-timing-function: ease-in-out;         /* 动画速度曲线：以低速开始和结束 */
+			    animation-iteration-count: infinite;            /* 播放次数：无限 */
+			 
+			    /* Safari and Chrome */
+			    -webkit-animation-name: breath;                 /* 动画名称 */
+			    -webkit-animation-duration: 3s;                 /* 动画时长3秒 */
+			    -webkit-animation-timing-function: ease-in-out; /* 动画速度曲线：以低速开始和结束 */
+			    -webkit-animation-iteration-count: infinite;    /* 播放次数：无限 */
+			}
+			 
+			@keyframes breath {
+			    from { opacity: 0.1; }                          /* 动画开始时的不透明度 */
+			    50%  { opacity:   1; }                          /* 动画50% 时的不透明度 */
+			    to   { opacity: 0.1; }                          /* 动画结束时的不透明度 */    
+			}
+			 
+			@-webkit-keyframes breath {
+			    from { opacity: 0.1; }                          /* 动画开始时的不透明度 */
+			    50%  { opacity:   1; }                          /* 动画50% 时的不透明度 */
+			    to   { opacity: 0.1; }                          /* 动画结束时的不透明度 */
+			}
+					
+		
 		
 	</style>
 </body>
@@ -96,7 +147,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="index.jsp">在线投票</a>
+					<a class="navbar-brand" href="index.jsp">FOLLOW YOUR HEART</a>
 				</div>
 
 				<!-- Collect the nav links, forms, and other content for toggling -->
@@ -137,13 +188,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						 </c:if>
 						</li>
 					</ul>
-
-					<form class="navbar-form navbar-right">
-						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search">
-						</div>
-						<button type="submit" class="btn btn-default">搜索</button>
-					</form>
 
 				</div><!-- /.navbar-collapse -->
 			</div><!-- /.container-fluid -->

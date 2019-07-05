@@ -3,6 +3,8 @@ package com.jsu.dao.impl;
 import java.sql.Connection;
 import java.sql.ResultSet;
 
+import javax.swing.plaf.SliderUI;
+
 import com.jsu.dao.ItemDao;
 import com.jsu.pojo.VoteItem;
 import com.jsu.util.DbTable;
@@ -50,13 +52,14 @@ public class ItemDaoImpl implements ItemDao {
 		//System.out.println(sql);
 		SqlExcute excute = new SqlExcute(JdbcUtil.getConnection());
 		ResultSet rs = excute.ExecuteQuery(sql, item.getSubjecId(),item.getUserId());
+		boolean r = false;
 		if(rs.next()){
 			if(rs.getInt("num") != 0){
-				return true;
+				r = true;
 			}
 		}
 		excute.closeResource();
-		return false;
+		return r;
 	}
 	@Override
 	public long countSomeOption(int id) throws Exception {
@@ -70,5 +73,35 @@ public class ItemDaoImpl implements ItemDao {
 		excute.closeResource();
 		return re;
 	}
-
+	@Override
+	public int countSomeSubject(int subjecid) throws Exception {
+		String sql = "select  count(DISTINCT(vu_user_id)) as num  from vote_item where vs_id = ?";
+		SqlExcute excute = new SqlExcute(JdbcUtil.getConnection());
+		ResultSet rs = excute.ExecuteQuery(sql, subjecid);
+		int num = 0 ;
+		if(rs.next()){
+			num =  rs.getInt("num");
+		}
+		excute.closeResource();
+		return num;
+	}
+	@Override
+	public boolean exitsUserAndOption(int userid, int optionid) throws Exception 
+	{
+		String sql = "SELECT COUNT(*) AS num FROM " + DbTable.ITEM + " WHERE " + DbTable.USER_ID +" = ? and " + DbTable.OPTION_ID + " = ?" ;
+		//System.out.println(sql);
+		SqlExcute excute = new SqlExcute(JdbcUtil.getConnection());
+		ResultSet rs = excute.ExecuteQuery(sql, userid,optionid);
+		try{
+			if(rs.next()){
+				if(rs.getInt("num") != 0){
+					return true;
+				}
+			}
+		}finally {
+			excute.closeResource();
+		}
+	
+		return false;
+	}
 }

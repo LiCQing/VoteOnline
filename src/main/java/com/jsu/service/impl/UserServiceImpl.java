@@ -1,12 +1,14 @@
 package com.jsu.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import com.jsu.dao.UserDao;
 import com.jsu.dao.impl.UserDaoImpl;
 import com.jsu.pojo.User;
 import com.jsu.service.UserService;
 import com.jsu.to.CheckResult;
+import com.jsu.to.PageResult;
 
 public class UserServiceImpl implements UserService {
 	private UserDao userDao = new UserDaoImpl();
@@ -34,6 +36,38 @@ public class UserServiceImpl implements UserService {
 	public User login(String name, String pass) throws Exception {
 		
 		return userDao.getUserById(name,pass);
+	}
+	/**
+	 * 修改
+	 */
+	@Override
+	public boolean updatePass(User user) throws Exception {
+		return userDao.updatePass(user);
+	}
+	/**
+	 *获取用户列表
+	 */
+	@Override
+	public PageResult getUserList(String page, String row) throws Exception {
+		int p = Integer.parseInt(page);
+		int r = Integer.parseInt(row);
+		
+		PageResult result = new PageResult();
+		result.setCurrentPage(p);
+		result.setList(userDao.getUserList((p-1)*r, (p-1)*r + r));
+		result.setHasPre(p==1?false:true);
+		int totle = userDao.getTotlePage(r);
+		result.setHasNext(p==totle?false:true);
+		result.setTotlePage(totle); ;
+		return result;
+	}
+	@Override
+	public boolean changeUserVersion(String id, String type) throws Exception {
+		return userDao.updateVersion(id,type);
+	}
+	@Override
+	public boolean changeUserStatus(String id, String status) throws Exception {
+		return userDao.updateStatus(id,status);
 	}
 
 }

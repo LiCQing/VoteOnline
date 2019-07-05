@@ -6,7 +6,9 @@
 	img{
 		height: 100px;
 	}
-	
+	.red{
+		color: #EF002A;
+	}
 
 
 
@@ -29,12 +31,13 @@
 		<c:forEach items="${subject.optionList }" var="option" varStatus="i">
 		<hr>
 			<div id="option${option.id }" class = "row">
-				
-					<c:if test="${option.image != null}">
-						<div class="col-md-2">
-							<img src="http://192.168.139.128/images/${option.image }" />
-						</div>
+					
+					<c:if test="${!fn:contains(option.image, 'null')}">
+							<div class="col-md-2">
+									<img src="${option.image }" />
+							</div>
 					</c:if>
+					
 				
 				<div class="col-md-4">
 					${option.title}
@@ -49,7 +52,10 @@
 					<span id="pasent${option.id }"> ${option.count }</span>
 				</div>
 				
-				<div class="col-md-1">
+				<div class="col-md-1  red">
+				<c:if test="${option.voted==true }">
+					<span class="glyphicon glyphicon-heart" aria-hidden="true"></span>
+				</c:if>
 				</div>
 				
 			</div>
