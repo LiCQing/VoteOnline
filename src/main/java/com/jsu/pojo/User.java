@@ -7,6 +7,9 @@ public class User {
 	private String phone;
 	private Integer status;
 	private Integer vervion;
+	private Long createTime;
+	private Long activeTime;
+	private String nick;
 	
 	public User(){
 		
@@ -71,6 +74,42 @@ public class User {
 		}
 	
 		return null;
+	}
+
+
+
+	public Long getCreateTime() {
+		return createTime;
+	}
+
+
+
+	public void setCreateTime(Long createTime) {
+		this.createTime = createTime;
+	}
+
+
+
+	public Long getActiveTime() {
+		return activeTime;
+	}
+
+
+
+	public void setActiveTime(Long activeTime) {
+		this.activeTime = activeTime;
+	}
+
+
+
+	public String getNick() {
+		return nick;
+	}
+
+
+
+	public void setNick(String nick) {
+		this.nick = nick;
 	}
 	
 	

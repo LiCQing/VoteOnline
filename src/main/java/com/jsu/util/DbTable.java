@@ -8,8 +8,17 @@ public final class DbTable {
 	public final static String USER_PASSWORD ="vu_password";
 	public final static String USER_PHONE="vu_phone";
 	public final static String USER_STATUS="vu_status";
-	public final  static String USER_VERSION="vu_version";
-	
+	public final static String USER_VERSION="vu_version";
+	public final static String USER_NICK="vu_user_nick";
+	public final static String USER_FREETIMES="vu_free_times";
+	public final static String USER_CREATE_TIME="vu_create_time";
+	public final static String USER_ACTIVE_TIME="vu_active_time";
+	public final static String USER_SEX="vu_sex";
+	public final static String USER_BIRTHDAY="vu_birthday";
+	public final static String USER_ADDR="vu_addr"; 
+	public final static String USER_HOBBY="vu_hobby"; 
+	public final static String USER_CAREER="vu_career"; 
+
 	
 	public final static String SUBJECT=" vote_subject ";
 	public final static String SUBJECT_ID="vs_id";
@@ -26,5 +35,9 @@ public final class DbTable {
 	
 	public final static String ITEM="vote_item";
 	public final static String ITEM_ID_="vi_id";
+	
+	public final static String UPDATE_USER_BASE_INFO = "update " + USER + " set " + USER_NICK + " = ?," +USER_SEX +"=?,"+USER_BIRTHDAY+"=? WHERE " + USER_ID + "=?";
+	public static final String UPDATE_USER_MORE_INFO = "update " + USER + " set " + USER_HOBBY + " = ?," +USER_CAREER+"=?,"+USER_ADDR+"=? WHERE " + USER_ID + "=?";
+	
 
 }

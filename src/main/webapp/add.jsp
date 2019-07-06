@@ -140,6 +140,13 @@
 					</div>
 					
 					<div class="form-group">
+						<label for="exampleInputEmail1"> 开始时间 </label>
+						<div class="input">
+							<input id="startDate" onchange="checkTime()" type="date" name="voteStart" value="${subject.startDay}" />
+						</div><!-- /input-group -->
+					</div>
+					
+					<div class="form-group">
 						<label for="exampleInputEmail1">截止日期(当日零点截止)  </label>
 						<div class="input">
 							<input id="endDate" onchange="checkTime()" type="date" name="voteEnd" value="${subject.endDay}" />

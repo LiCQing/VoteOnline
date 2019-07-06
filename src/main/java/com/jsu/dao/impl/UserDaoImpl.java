@@ -53,12 +53,13 @@ public class UserDaoImpl implements UserDao{
 
 	@Override
 	public boolean insertUser(User user) throws Exception {
-		String sql = "INSERT INTO " + DbTable.USER + " (" + DbTable.USER_NAME+","+DbTable.USER_PASSWORD + ","+DbTable.USER_PHONE
-				+" ) VALUES (?,?,?)";
+		String sql = "INSERT INTO " + DbTable.USER + " (" + DbTable.USER_NAME+","+DbTable.USER_PASSWORD + ","+DbTable.USER_PHONE +
+				 ","+DbTable.USER_CREATE_TIME +"," + DbTable.USER_ACTIVE_TIME
+				+" ) VALUES (?,?,?,?,?)";
 		SqlExcute excute = new SqlExcute(JdbcUtil.getConnection());
 		System.out.println(sql);
-		boolean res = excute.ExecuteUpdate(sql, user.getName(),user.getPassword(),user.getPhone());
-		excute.closePreparedStatement();
+		boolean res = excute.ExecuteUpdate(sql, user.getName(),user.getPassword(),user.getPhone(),user.getCreateTime(),user.getActiveTime());
+		excute.closeResource();
 		return res;
 	}
 
@@ -75,6 +76,7 @@ public class UserDaoImpl implements UserDao{
 			user.setStatus(rs.getInt(DbTable.USER_STATUS));
 			user.setVervion(rs.getInt(DbTable.USER_VERSION));
 			user.setPassword(rs.getString(DbTable.USER_PASSWORD));
+			user.setNick(rs.getString(DbTable.USER_NICK));
 		}else{
 			excute.closeResource();
 			return null;
@@ -160,6 +162,28 @@ public class UserDaoImpl implements UserDao{
 		}
 		excute.closeResource();
 		return b;
+	}
+	/**
+	 * 添加用户基本信息
+	 */
+	@Override
+	public boolean updateUserBaseInfo(int id, String nick, String sex, long birthday) throws Exception {
+		SqlExcute exe = new SqlExcute(JdbcUtil.getConnection());
+		boolean f = exe.ExecuteUpdate(DbTable.UPDATE_USER_BASE_INFO, nick,sex,birthday,id);
+		exe.closeResource();
+		if(f) return true;
+		return false;
+	}
+	/**
+	 * 添加更多信息
+	 */
+	@Override
+	public boolean updateUserMoreInfo(int id, String hobby, String carer, String addr) throws Exception {
+		SqlExcute exe = new SqlExcute(JdbcUtil.getConnection());
+		boolean f = exe.ExecuteUpdate(DbTable.UPDATE_USER_MORE_INFO, hobby,carer,addr,id);
+		exe.closeResource();
+		if(f) return true;
+		return false;
 	}
 
 }

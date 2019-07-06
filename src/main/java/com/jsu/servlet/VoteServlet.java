@@ -96,6 +96,7 @@ public class VoteServlet extends HttpServlet {
 			// 查询列表
 			result = voteService.lookUpVoteList(user.getId(),lookup, page, row);
 		} else {
+			System.out.println(user  + "user-------------");
 			// 返回所有列表
 			result = voteService.allVoteList(user.getId(),page, row);
 		}

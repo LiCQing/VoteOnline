@@ -23,4 +23,8 @@ public interface UserService {
 
 	public boolean changeUserStatus(String id, String status)throws Exception ;
 
+	public boolean updateUserBaseInfo(int id, String nick, String sex, long birthday)throws Exception ;
+
+	boolean updateUserMoreInfo(int id, String hobby, String career, String addr) throws Exception;
+
 }

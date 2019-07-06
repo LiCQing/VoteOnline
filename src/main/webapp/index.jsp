@@ -56,9 +56,10 @@
 			    to   { opacity: 0.1; right:13%; }                          /* 动画结束时的不透明度 */    
 			}
  
+ 
  </style>
-
-	<div class="container middle">
+ 
+	<div class="container middle"  >
 	<div class="row">
 		<div class="col-md-6">
 		    <div class="input-group">
@@ -68,7 +69,14 @@
 		      </span>
 		    </div><!-- /input-group -->
 	    </div>
-	    <div class="col-md-6"></div>
+	    <div class="col-md-4" style="line-height: 26px">
+	    	<span> 千万人都在用的投票网站，用了的人都说好  </span>
+	    	
+	    	
+	    </div>
+	    <div class="col-md-2">
+	    	<div><a class="btn btn-danger" href="add.jsp">免费发起投票</a> </div>
+	    </div>
 	   </div>
 	    <hr>
 		<div id="voteList">

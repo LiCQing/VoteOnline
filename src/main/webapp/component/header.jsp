@@ -49,7 +49,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			box-shadow: #999999 10px 10px 20px;
 			padding-left: 50px;
 			padding-right: 50px;
-			padding-bottom: 50px
+			padding-bottom: 50px;
+			position: relative;
 		}
 		
 		.selected{
@@ -153,7 +154,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav">
-						<li class="active"><a href="#">首页 <span class="sr-only">(current)</span></a></li>
+						<li class=""><a href="#">首页 <span class="sr-only">(current)</span></a></li>
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">其他
 								<span class="caret"></span></a>
@@ -175,7 +176,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						
 							<a href="sign.jsp"       >登陆
 							</a>
-								
 						 </c:if>
 						  <c:if test="${sessionScope.currentUser!=null }">
 						

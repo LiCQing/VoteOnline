@@ -1,5 +1,7 @@
 package com.jsu.test;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.jsu.service.UserService;
 import com.jsu.service.VoteService;
 import com.jsu.service.impl.UserServiceImpl;
@@ -11,12 +13,14 @@ public class TestUrl {
 	public static void main(String[] args) throws Exception {
 		
 		
-		UserService userService = new UserServiceImpl();
+		/*UserService userService = new UserServiceImpl();
 		//userService.
 		VoteService voteService= new VoteServiceImpl();
 		voteService.myVoteList("6", "1", "6");
 		
-		SqlExcute.lookResource();
+		SqlExcute.lookResource();*/
+		String []hobby ={"1","3"};
+		System.out.println(StringUtils.join(hobby, ","));
 		
 	}
 	

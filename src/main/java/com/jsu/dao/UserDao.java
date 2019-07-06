@@ -26,4 +26,8 @@ public interface UserDao {
 
 	boolean updateStatus(String id, String status)throws Exception;
 
+	boolean updateUserBaseInfo(int id, String nick, String sex, long birthday)throws Exception;
+
+	boolean updateUserMoreInfo(int id, String hobby, String carer, String addr) throws Exception;
+
 }

@@ -3,6 +3,7 @@ package com.jsu.servlet;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.jsu.en.Status;
 import com.jsu.pojo.User;
@@ -19,6 +21,7 @@ import com.jsu.service.impl.UserServiceImpl;
 import com.jsu.to.CheckResult;
 import com.jsu.util.AttrRequest;
 import com.jsu.util.AttrSesion;
+import com.jsu.util.DateUtil;
 import com.jsu.util.JsonUtils;
 import com.jsu.util.UrlUtil;
 import com.jsu.util.VerifyCode;
@@ -70,11 +73,44 @@ public class SignServlet extends HttpServlet {
 				 changePass(request,response);
 			}else if(url.equals("checkPass")){
 				 checkPass(request,response);
+			}else if(url.equals("addinfo")){
+				 addUserInfo(request,response);
 			}
 		}catch (Exception e){
+			e.printStackTrace();
 			response.sendRedirect(request.getContextPath()+"/error.jsp");
 		}
 		
+	}
+
+	private void addUserInfo(HttpServletRequest request, HttpServletResponse response)throws Exception {
+		  String type = request.getParameter("type");
+		  System.out.println("add USER info " + type);
+		  User user = getUser(request);
+		  if(type.equals("base")){
+			  String nick = request.getParameter("userNick");
+			  String sex = request.getParameter("sex");
+			  String birthday = request.getParameter("birthday");
+			  PrintWriter out = response.getWriter();
+			  if(nick!=null && sex!=null && birthday!=null)
+				  if(service.updateUserBaseInfo(user.getId(),nick,sex,DateUtil.StringToMilliseconds(birthday))){
+				  out.print("ok");
+			  }
+		  }else{
+			  String[] hobby = request.getParameterValues("hobby");
+			  String careerPosition = request.getParameter("careerPosition");
+			  String city = request.getParameter("city");
+			  PrintWriter out = response.getWriter();
+			  if(service.updateUserMoreInfo(user.getId(),StringUtils.join(hobby, ","),careerPosition,city)){
+				  out.print("ok");
+			  }
+		  }
+		 
+		  
+	}
+
+	private User getUser(HttpServletRequest request) {
+		return (User)request.getSession().getAttribute(AttrSesion.CURRENT_USER);
 	}
 
 	private void checkPass(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -141,7 +177,11 @@ public class SignServlet extends HttpServlet {
 		}
 		
 			if(service.addUser(user)){
-				response.sendRedirect(request.getContextPath()+"/sign.jsp");
+				//重新获取全部用户信息
+				user = service.login(user.getName(),user.getPassword());
+				
+				request.getSession().setAttribute(AttrSesion.CURRENT_USER, user);
+				response.sendRedirect(request.getContextPath()+"/filluserinfo.jsp");
 			}else{
 				request.setAttribute("regError", "系统异常，注册失败");
 				request.getRequestDispatcher("/sign.jsp").forward(request, response);
@@ -169,6 +209,9 @@ public class SignServlet extends HttpServlet {
 		user.setName(request.getParameter(AttrRequest.USER_NAME));
 		user.setPassword(pass);
 		user.setPhone(request.getParameter(AttrRequest.USER_PHONE));
+		
+		user.setCreateTime(new Date().getTime());
+		user.setActiveTime(new Date().getTime());
 		
 		return user;
 	}
