@@ -140,9 +140,13 @@
 					</div>
 					
 					<div class="form-group">
-						<label for="exampleInputEmail1"> 开始时间 </label>
+						<label for="exampleInputEmail1"> 开始时间 </label> 
 						<div class="input">
 							<input id="startDate" onchange="checkTime()" type="date" name="voteStart" value="${subject.startDay}" />
+							<button class="btn btn-default" onclick="changeTime(0,0)" type="button">提交后</button>
+							<button class="btn btn-default" onclick="changeTime(0,1)" type="button">明天</button>
+							<button class="btn btn-default" onclick="changeTime(0,3)" type="button">三天后</button>
+							<button class="btn btn-default" onclick="changeTime(0,7)"type="button">一周后</button>
 						</div><!-- /input-group -->
 					</div>
 					
@@ -150,6 +154,10 @@
 						<label for="exampleInputEmail1">截止日期(当日零点截止)  </label>
 						<div class="input">
 							<input id="endDate" onchange="checkTime()" type="date" name="voteEnd" value="${subject.endDay}" />
+							<button class="btn btn-default" onclick="changeTime(1,4)" type="button">三天</button>
+							<button class="btn btn-default" onclick="changeTime(1,8)" type="button">一周</button>
+							<button class="btn btn-default" onclick="changeTime(1,16)" type="button">十五天</button>
+							<button class="btn btn-default" onclick="changeTime(1,30)"type="button">一月</button>
 						</div><!-- /input-group -->
 					</div>
 					<label for="exampleInputEmail1">选项 </label>
@@ -189,11 +197,21 @@
 										<div class="input-group below">
 											<input type="text" name="option" maxlength="100" class="form-control" value="${option.title }">
 											<span class="input-group-btn">
-												<button class="btn btn-default" id="${i.index }" onclick="addImg(this)" type="button">${option.image==null?'插入图片':'删除图片' }</button>
+												<button class="btn btn-default" id="${i.index }" onclick="addImg(this)" type="button">
+												<c:choose>
+														<c:when test="${fn:contains(option.image, 'null')}">
+															插入图片
+														</c:when>
+														<c:otherwise>
+															删除图片
+														</c:otherwise>
+												</c:choose>
+												
+												</button>
 												<button class="btn btn-default" id="${i.index }" onclick="delOption(this)" type="button">×</button>
 											</span>
 										</div><!-- /input-group -->
-										<c:if test="${option.image!=null }">
+										<c:if test="${!fn:contains(option.image, 'null')}">
 											<div class="imgDiv">
 											<input name="url" type="hidden" value="${option.image }">
 											<input id="file${i.index }" onchange="sc(this);loadImg(this)" type="file"/>
@@ -201,7 +219,7 @@
 											<img src="${option.image }"  class="thumbnail">
 										</div>
 										</c:if>
-										<c:if test="${option.image==null }">
+										<c:if test="${!fn:contains(option.image, 'null')}">
 											<div class="imgDiv DisNone">
 											<input id="file${i.index }" onchange="sc(this);loadImg(this)" type="file"/>
 											<input type="button" id="${i.index }" onclick="upload(this)" value="上传">
@@ -315,15 +333,35 @@
 			//alert($('#endDate').val());
 			//初始化时间为一周后
 			if ($('#endDate').val() == null || $('#endDate').val() == "") {
-				var time = new Date();
-				time.setDate(time.getDate() + 7);
-				var day = ("0" + time.getDate()).slice(-2);
-				var month = ("0" + (time.getMonth() + 1)).slice(-2);
-				var today = time.getFullYear() + "-" + (month) + "-" + (day);
-				$('#endDate').val(today);
+				changeTime(1,7);
+			}
+			
+			//初始化时间为一周后
+			if ($('#startDate').val() == null || $('#startDate').val() == "") {
+				changeTime(0,0);
 			}
                
             });
+		
+		function changeTime(type,day){
+			var time = new Date();
+			var inputTime;
+			if(type==0){
+				console.log("startDate");
+				time.setDate(time.getDate() + day);
+				inputTime = $("#startDate");
+			}else{
+				console.log("endDate");
+				time.setDate(time.getDate() + day);
+				inputTime = $("#endDate");
+			}
+			
+			var day = ("0" + time.getDate()).slice(-2);
+			var month = ("0" + (time.getMonth() + 1)).slice(-2);
+			var today = time.getFullYear() + "-" + (month) + "-" + (day);
+			inputTime.val(today);
+		}
+		
 		function checkTime(){
 			console.log($('#endDate').val());
 			var startTime = new Date(Date.parse($('#endDate').val() + " 0:0"));

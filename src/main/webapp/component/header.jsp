@@ -15,11 +15,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script type="text/javascript" src="js/jquery.min.js"></script>
 <link rel="stylesheet" href="css/buttons.css">
 <script type="text/javascript" src="js/common.js"></script>
-<link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!-- <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
+<link rel="stylesheet" href="tool/bootstrap/css/bootstrap.min.css">
+<script type="text/javascript" src="tool/bootstrap/js/bootstrap.min.js"></script>
 <!-- <script src="js/jquery-3.2.1.min.js"></script> -->
-<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<!-- <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"> -->
+<link rel="stylesheet" href="tool/font-awesome/css/font-awesome.min.css">
 <script src="tool/layer/layer.js"></script>
+<script src="js/vue.min.js"></script>
 <style>
 
 			body{
@@ -169,7 +173,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</ul>
 						</li>
 					</ul>
-
+					
+					
 					<ul class="nav navbar-nav navbar-right">
 						<li class="dropdown">
 						 <c:if test="${sessionScope.currentUser==null }">
@@ -178,7 +183,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</a>
 						 </c:if>
 						  <c:if test="${sessionScope.currentUser!=null }">
-						
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">我的
 								<span class="caret"></span></a>
 							<ul class="dropdown-menu">
@@ -188,7 +192,26 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						 </c:if>
 						</li>
 					</ul>
-
+					
+					<ul class="nav navbar-nav navbar-right">
+						<li>
+						      <a>欢迎
+									<span>
+										<c:if test="${sessionScope.currentUser.nick!=null }">
+											${sessionScope.currentUser.nick }
+										</c:if>
+										<c:if test="${sessionScope.currentUser.nick==null }">
+											${sessionScope.currentUser.name }
+										</c:if>
+									</span>
+									 <c:if test="${sessionScope.currentUser==null }">
+						
+										 游客
+									 </c:if>
+								</a>
+						<li>
+					</ul>
+					
 				</div><!-- /.navbar-collapse -->
 			</div><!-- /.container-fluid -->
 		</nav>

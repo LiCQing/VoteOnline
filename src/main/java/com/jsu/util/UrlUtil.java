@@ -29,5 +29,19 @@ public class UrlUtil {
 	
 		return url.substring(i + 1,j);
 	}
+	public static String getJspName(String url){
+		if(url == null){
+			return "";
+		}
+		
+		int start = url.lastIndexOf('/');
+		int end = url.lastIndexOf('.');
+		if(start < 0 || end <0){
+			return null;
+		}
+		return url.substring(start+1, end);
+	 
+	}
+
 
 }

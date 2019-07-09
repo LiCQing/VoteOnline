@@ -1,5 +1,6 @@
 package com.jsu.pojo;
 
+import java.util.Date;
 import java.util.List;
 
 import com.jsu.util.DateUtil;
@@ -10,6 +11,9 @@ public class VoteSubject {
 	private String titile;
 	private int type;
 	private Long end; // 时间戳
+	private Long start;
+	private Long create;
+	
 	private int status;
 
 	private List<VoteOption> optionList;
@@ -18,8 +22,10 @@ public class VoteSubject {
 	private boolean voted;
 	//附加状态 , 获取一个选项图片
 	private String url;
-	//附加
+	//附加投票人数
 	private int count;
+	//附加
+	private int optionNum;
 	
 	public VoteSubject() {
 
@@ -86,10 +92,13 @@ public class VoteSubject {
 
 	
 
+
+
 	@Override
 	public String toString() {
 		return "VoteSubject [id=" + id + ", userId=" + userId + ", titile=" + titile + ", type=" + type + ", end=" + end
-				+ ", status=" + status +  ", voted=" + voted + ", url=" + url + "]" + printList();
+				+ ", start=" + start + ", create=" + create + ", status=" + status + ", optionList=" + printList() 
+				+ ", voted=" + voted + ", url=" + url + ", count=" + count + "]";
 	}
 
 	private String printList() {
@@ -137,6 +146,43 @@ public class VoteSubject {
 
 	public void setCount(int count) {
 		this.count = count;
+	}
+
+	public Long getStart() {
+		return start;
+	}
+
+	public void setStart(Long start) {
+		this.start = start;
+	}
+
+	public Long getCreate() {
+		return create;
+	}
+
+	public void setCreate(Long create) {
+		this.create = create;
+	}
+	
+	public String getStartDay(){
+		return DateUtil.MilinsecondsToStringDate(start);
+	}
+	
+	public boolean isStartStatus(){
+		Long now = new Date().getTime();
+		if(now > start){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	public int getOptionNum() {
+		return optionNum;
+	}
+
+	public void setOptionNum(int optionNum) {
+		this.optionNum = optionNum;
 	}
 
 }

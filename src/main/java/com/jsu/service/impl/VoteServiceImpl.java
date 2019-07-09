@@ -5,9 +5,11 @@ import java.util.List;
 
 import com.jsu.dao.ItemDao;
 import com.jsu.dao.OptionDao;
+import com.jsu.dao.SOIDao;
 import com.jsu.dao.SubjectDao;
 import com.jsu.dao.impl.ItemDaoImpl;
 import com.jsu.dao.impl.OptionDaoImpl;
+import com.jsu.dao.impl.SOIDaoImpl;
 import com.jsu.dao.impl.SubjectDaoImpl;
 import com.jsu.en.Status;
 import com.jsu.pojo.VoteItem;
@@ -23,6 +25,7 @@ public class VoteServiceImpl implements VoteService {
 	OptionDao optionDao = new OptionDaoImpl();
 	SubjectDao subjectDao = new SubjectDaoImpl();
 	ItemDao itemDao = new ItemDaoImpl();
+	SOIDao SiDao = new SOIDaoImpl();
 
 	public boolean addSubject(VoteSubject vs) throws Exception {
 		Connection conn = null;
@@ -71,22 +74,22 @@ public class VoteServiceImpl implements VoteService {
 			throws Exception {
 
 		int start = (Integer.parseInt(page) - 1) * Integer.parseInt(row);
-		int end = start + Integer.parseInt(row);
+		int end =Integer.parseInt(row);
 
 		sql += " LIMIT ?,?";
 
 		List<VoteSubject> list;
 		int total =0;
-
+		
 		if (type == 1) {
 			list = subjectDao.selectPageSubject(sql, start, end);
-			total = subjectDao.getTotalPage("SELECT COUNT(*) as num FROM " + DbTable.SUBJECT ,null,row);
+			total = subjectDao.getTotalPage("SELECT COUNT(*) as num FROM " + DbTable.SUBJECT +" WHERE " + DbTable.SUBJECT_START + " < " +System.currentTimeMillis() ,null,row);
 		} else if (type == 2) {
 			list = subjectDao.selectPageSubject(sql, userId, start, end);
-			total = subjectDao.getTotalPage("SELECT COUNT(*) as num FROM " + DbTable.SUBJECT +" WHERE " + DbTable.USER_ID + " =?" ,userId+"",row);
+			total = subjectDao.getTotalPage("SELECT COUNT(*) as num FROM " + DbTable.SUBJECT +" WHERE " + DbTable.SUBJECT_START + " < " +System.currentTimeMillis()+" and "+ DbTable.USER_ID + " =?" ,userId+"",row);
 		} else {
 			list = subjectDao.selectPageSubject(sql, key, start, end);
-			total = subjectDao.getTotalPage("SELECT COUNT(*) as num FROM " + DbTable.SUBJECT +" WHERE " + DbTable.SUBJECT_TITLE + " like ?" ,key,row);
+			total = subjectDao.getTotalPage("SELECT COUNT(*) as num FROM " + DbTable.SUBJECT +" WHERE " + DbTable.SUBJECT_START + " < " +System.currentTimeMillis()+" and "+ DbTable.SUBJECT_TITLE + " like ?" ,key,row);
 		}
 
 		// 对获取的list 重新赋值 , 查看当前用户是否已经投票
@@ -123,7 +126,7 @@ public class VoteServiceImpl implements VoteService {
 	 */
 	public PageResult allVoteList(int userId, String page, String row) throws Exception {
 		return voteList("SELECT * FROM " + DbTable.SUBJECT + "WHERE " + DbTable.SUBJECT_STATUS + " = "
-				+ Status.NOMOR.getStatus(), userId, page, row, null, 1);
+				+ Status.NOMOR.getStatus() + " and " + DbTable.SUBJECT_START + " < " +System.currentTimeMillis() , userId, page, row, null, 1);
 	}
 
 	/**
@@ -133,7 +136,7 @@ public class VoteServiceImpl implements VoteService {
 	public PageResult lookUpVoteList(int userId, String key, String page, String row) throws Exception {
 		return voteList(
 				"SELECT * FROM " + DbTable.SUBJECT + " WHERE " + DbTable.SUBJECT_STATUS + " = "
-						+ Status.NOMOR.getStatus() + " and " + DbTable.SUBJECT_TITLE + " like ?",
+						+ Status.NOMOR.getStatus() + " and " + DbTable.SUBJECT_START + " < " +System.currentTimeMillis() + " and " + DbTable.SUBJECT_TITLE + " like ?",
 				userId, page, row, "%" + key + "%", 3);
 	}
 
@@ -145,7 +148,7 @@ public class VoteServiceImpl implements VoteService {
 
 		return voteList(
 				"SELECT * FROM " + DbTable.SUBJECT + " WHERE " + DbTable.SUBJECT_STATUS + " = "
-						+ Status.NOMOR.getStatus() + " and " + DbTable.USER_ID + " = ?",
+						+ Status.NOMOR.getStatus()+ " and " + DbTable.SUBJECT_START + " < " +System.currentTimeMillis()  + " and " + DbTable.USER_ID + " = ?",
 				Integer.parseInt(userId), page, row, null, 2);
 	}
 
@@ -245,6 +248,26 @@ public class VoteServiceImpl implements VoteService {
 	@Override
 	public int countSubjectVoted(int subjecid) throws Exception {
 		return itemDao.countSomeSubject(subjecid);
+	}
+	/**
+	 * 获取热门投票
+	 * @throws Exception 
+	 */
+	@Override
+	public List<VoteSubject> getHotVoteList(int userId) throws Exception {
+		List<VoteSubject> list = SiDao.getHotList();
+		for (VoteSubject voteSubject : list) {
+			VoteItem item = new VoteItem();
+			item.setSubjecId(voteSubject.getId());
+			item.setUserId(userId);
+			if (userId>0 && itemDao.exits(item))
+				voteSubject.setVoted(true);
+			else {
+				voteSubject.setVoted(false);
+			}
+			voteSubject.setUrl(FtpUtil.IMAGE_URL+optionDao.getSomeImg(voteSubject.getId()));
+		}
+		return list;
 	}
 	
 	

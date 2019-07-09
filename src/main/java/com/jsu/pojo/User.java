@@ -10,6 +10,7 @@ public class User {
 	private Long createTime;
 	private Long activeTime;
 	private String nick;
+	private int freeTimes;
 	
 	public User(){
 		
@@ -110,6 +111,34 @@ public class User {
 
 	public void setNick(String nick) {
 		this.nick = nick;
+	}
+
+
+
+	public int getFreeTimes() {
+		return freeTimes;
+	}
+
+
+
+	public void setFreeTimes(int freeTimes) {
+		this.freeTimes = freeTimes;
+	}
+
+
+
+	public boolean isManage() {
+		if(vervion==3) return true;
+		return false;
+	}
+
+
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", name=" + name + ", password=" + password + ", phone=" + phone + ", status="
+				+ status + ", vervion=" + vervion + ", createTime=" + createTime + ", activeTime=" + activeTime
+				+ ", nick=" + nick + ", freeTimes=" + freeTimes + "]";
 	}
 	
 	

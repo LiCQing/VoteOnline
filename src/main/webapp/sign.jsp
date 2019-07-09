@@ -15,11 +15,12 @@
 <%@ include file="component/header.jsp" %>
 
 
-	<div class="container middle"  >
+	<div class="container middle">
 		<hr>
 		<ul id="myTab" class="nav nav-tabs" style="margin-left: 300px;">
 			<li class="${regError == null?'active':''}"><a href="#login"    data-toggle="tab"> 用户登陆</a></li>
-			<li class="${regError == null?'':'active'}"><a href="#regist"  data-toggle="tab">用户注册</a></li>
+			<li class="${regError == null?'':'active'}"><a href="#regist"  data-toggle="tab">用户注册&nbsp;|&nbsp;创建账户，即可获得免费发布投票的机会</a></li>
+			
 		</ul>
 		<div id="myTabContent" class="tab-content">
 			<div class="tab-pane fade in active" id="login">
@@ -47,7 +48,6 @@
 			</div>
 			<div class="tab-pane fade" id="regist">
 				<div class="register_div">
-					<h6>创建您的账户，享受专属优惠与个性化服务</h6>
 					<form onsubmit="return check_re()" action="sign/register" method="post">
 						<label>用户名&nbsp;</label> <span id="nspan">*</span><br /> <input
 							class="input_acc" name="nick" id="nickid" type="text"

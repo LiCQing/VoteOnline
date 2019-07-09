@@ -2,13 +2,12 @@ package com.jsu.dao.impl;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.jsu.dao.SubjectDao;
 import com.jsu.en.Status;
-import com.jsu.pojo.VoteOption;
 import com.jsu.pojo.VoteSubject;
 import com.jsu.util.DbTable;
 import com.jsu.util.JdbcUtil;
@@ -28,14 +27,14 @@ public class SubjectDaoImpl implements SubjectDao {
 	 */
 	public boolean insertSubject(VoteSubject subject, Connection conn) throws Exception {
 		String sql = "INSERT INTO" + DbTable.SUBJECT + "(" + DbTable.SUBJECT_TITLE + "," + DbTable.SUBJECT_TYPE + ","
-				+ DbTable.SUBJECT_END + "," + DbTable.USER_ID + ") VALUES (?,?,?,?)";
+				+ DbTable.SUBJECT_END + "," + DbTable.USER_ID + "," +DbTable.SUBJECT_START +"," +DbTable.SUBJECT_CREATE + ") VALUES (?,?,?,?,?,?)";
 
 		// 创建执行类
 		SqlExcute excute = new SqlExcute(conn);
 		// 插入投票
 		boolean result = false;
 		try {
-			result = excute.ExecuteUpdate(sql, subject.getTitile(), subject.getType(), subject.getEnd(),subject.getUserId());
+			result = excute.ExecuteUpdate(sql, subject.getTitile(), subject.getType(), subject.getEnd(),subject.getUserId(),subject.getStart(),new Date().getTime());
 		} finally {
 			excute.closePreparedStatement();
 		}
@@ -51,7 +50,7 @@ public class SubjectDaoImpl implements SubjectDao {
 		ResultSet set = excute.ExecuteQuery("SELECT LAST_INSERT_ID() AS id");
 		set.next();
 		int result = set.getInt("id");
-		excute.closeResultSet();
+		excute.closeRSandStatment();
 		return result;
 	}
 	/**
@@ -84,6 +83,10 @@ public class SubjectDaoImpl implements SubjectDao {
 			vs.setTitile(rs.getString(DbTable.SUBJECT_TITLE));
 			vs.setEnd(rs.getLong(DbTable.SUBJECT_END));
 			vs.setUserId(rs.getInt(DbTable.USER_ID));
+			vs.setStart(rs.getLong(DbTable.SUBJECT_START));
+			vs.setCreate(rs.getLong(DbTable.SUBJECT_CREATE));
+			vs.setOptionNum(rs.getInt(DbTable.SUBJECT_OPTION_COUNT));
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -146,7 +149,7 @@ public class SubjectDaoImpl implements SubjectDao {
 	public List<VoteSubject> getListUserVoted(int userId,int start, int end) throws Exception {
 		String sql = "SELECT * from vote_subject WHERE "
 				+ "vs_id in ( select vs_id from vote_item where "
-				+ "vu_user_id = ?) and vs_status = 0 limit ?,?";
+				+ "vu_user_id = ?)  and "+DbTable.SUBJECT_START+" < "+System.currentTimeMillis()+" and vs_status = 0 limit ?,?";
 		List<VoteSubject> list = new ArrayList<>();
 		SqlExcute excute = new SqlExcute(JdbcUtil.getConnection());
 		ResultSet rs ;

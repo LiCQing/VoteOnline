@@ -30,7 +30,7 @@ public class OptionDaoImpl implements OptionDao {
 			try{
 				result = result & excute.ExecuteUpdate(sql, voteOption.getTitle(), vsId, voteOption.getImage());
 			}finally{
-				excute.closePreparedStatement();
+				excute.closePreparedStatement();;
 			}
 		}
 

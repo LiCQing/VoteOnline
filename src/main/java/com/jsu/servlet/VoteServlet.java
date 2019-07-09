@@ -11,8 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.jsu.pojo.User;
 import com.jsu.pojo.VoteSubject;
+import com.jsu.service.AnalyzeService;
 import com.jsu.service.VoteService;
+import com.jsu.service.impl.AnalyzeServiceImpl;
 import com.jsu.service.impl.VoteServiceImpl;
+import com.jsu.to.HighchartsResult;
 import com.jsu.to.PageResult;
 import com.jsu.util.AttrRequest;
 import com.jsu.util.AttrSesion;
@@ -25,6 +28,7 @@ import com.jsu.util.UrlUtil;
 public class VoteServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private VoteService voteService = new VoteServiceImpl();
+	private AnalyzeService aservice = new AnalyzeServiceImpl();
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -47,12 +51,58 @@ public class VoteServlet extends HttpServlet {
 				getVoteList(request, response);
 			}else if(url.equals("view")){ //查看投票
 				joinVote(request,response);
+			}else if(url.equals("hotList")){
+				getHotVoteList(request,response);
+			}else if(url.equals("charts")){
+				getCharts(request,response);
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			response.sendRedirect(request.getContextPath() + "/error.jsp");
 		}
+	}
+	
+	/**
+	 * 获取投票的图表数据
+	 * @param request
+	 * @param response
+	 * @throws Exception 
+	 */
+	private void getCharts(HttpServletRequest request, HttpServletResponse response) throws Exception {
+				//回调函数
+				String str=request.getParameter("Callback");
+				
+				//response.setCharacterEncoding("UTF-8");
+				PrintWriter out = response.getWriter();
+				String id = request.getParameter("subjectId");
+				HighchartsResult res = aservice.getOptionSex(Integer.parseInt(id));
+				String json = JsonUtils.objectToJson(res);
+				
+				 if (str==null||str.equals("")) {
+			        } else {
+			            json =  str + "(" + json + ")";
+			        }
+				
+				out.print(json);
+	}
+	
+	/**
+	 * 获取参与人数最多的投票
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	private void getHotVoteList(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		User user =(User) request.getSession().getAttribute(AttrSesion.CURRENT_USER);
+		if(user==null){
+			user=new User();
+			user.setId(-1);
+		}
+		List<VoteSubject> list = voteService.getHotVoteList(user.getId());
+		PrintWriter out = response.getWriter();
+		out.print(JsonUtils.objectToJson(list));
+		out.close();
 	}
 
 	private void joinVote(HttpServletRequest request, HttpServletResponse response) throws Exception {

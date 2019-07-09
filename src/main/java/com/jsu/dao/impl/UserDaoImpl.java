@@ -2,11 +2,13 @@ package com.jsu.dao.impl;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.jsu.dao.UserDao;
 import com.jsu.pojo.User;
+import com.jsu.pojo.UserInfo;
 import com.jsu.util.DbTable;
 import com.jsu.util.JdbcUtil;
 import com.jsu.util.SqlExcute;
@@ -62,9 +64,9 @@ public class UserDaoImpl implements UserDao{
 		excute.closeResource();
 		return res;
 	}
-
+	
 	@Override
-	public User getUserById(String name, String pass) throws Exception {
+	public User getUserByPass(String name, String pass) throws Exception {
 		String sql = "SELECT * FROM " + DbTable.USER + " WHERE " + DbTable.USER_NAME + "  =? and " + DbTable.USER_PASSWORD + " = ?";
 		System.out.println(sql+"  " + name + " " + pass);
 		SqlExcute excute = new SqlExcute(JdbcUtil.getConnection());
@@ -77,6 +79,10 @@ public class UserDaoImpl implements UserDao{
 			user.setVervion(rs.getInt(DbTable.USER_VERSION));
 			user.setPassword(rs.getString(DbTable.USER_PASSWORD));
 			user.setNick(rs.getString(DbTable.USER_NICK));
+			user.setFreeTimes(rs.getInt(DbTable.USER_FREETIMES));
+			user.setPhone(rs.getString(DbTable.USER_PHONE));
+			user.setCreateTime(rs.getLong(DbTable.USER_CREATE_TIME));
+			user.setActiveTime(rs.getLong(DbTable.USER_ACTIVE_TIME));
 		}else{
 			excute.closeResource();
 			return null;
@@ -184,6 +190,80 @@ public class UserDaoImpl implements UserDao{
 		exe.closeResource();
 		if(f) return true;
 		return false;
+	}
+
+	@Override
+	public int getFreeTimes(int userId) throws Exception {
+		SqlExcute exe = new SqlExcute(JdbcUtil.getConnection());
+		ResultSet rs = exe.ExecuteQuery( DbTable.SELECT_FREETIMES, userId);
+		int times = 0;
+		if(rs.next()){
+			times = rs.getInt(DbTable.USER_FREETIMES);
+		}
+		exe.closeResource();
+		return times;
+	}
+
+	@Override
+	public boolean updateUserFreeTimes(int userId) throws Exception {
+		SqlExcute exe = new SqlExcute(JdbcUtil.getConnection());
+		boolean b = exe.ExecuteUpdate(DbTable.REDUCE_FREETIMES, userId);
+		exe.closeResource();
+		return b;
+	}
+	/**
+	 * 获取用户详细信息
+	 * @throws Exception 
+	 */
+	@Override
+	public UserInfo getUserMoreInfo(int userId) throws Exception {
+		String sql = "select * from " + DbTable.USER + " where " + DbTable.USER_ID  + " = ?" ;
+		SqlExcute exe = new SqlExcute(JdbcUtil.getConnection());
+		ResultSet rs = exe.ExecuteQuery(sql, userId);
+		UserInfo ui = new UserInfo();
+		if(rs.next()){
+			/**
+			 * private int sex;
+				private long birthDay;
+				private int addr;
+				private String hobby;
+				private int career;
+			 */
+			ui.setSex(rs.getInt(DbTable.USER_SEX));
+			ui.setBirthDay(rs.getLong(DbTable.USER_BIRTHDAY));
+			ui.setAddr(rs.getInt(DbTable.USER_ADDR));
+			ui.setHobby(rs.getString(DbTable.USER_HOBBY));
+			ui.setCareer(rs.getInt(DbTable.USER_CAREER));
+		}
+		
+		exe.closeResource();
+		
+		return ui;
+	}
+
+	@Override
+	public User getUerBaseInfoById(int userId) throws Exception {
+		String sql = "SELECT * FROM " + DbTable.USER + " WHERE " + DbTable.USER_ID + "  =? ";
+		SqlExcute excute = new SqlExcute(JdbcUtil.getConnection());
+		ResultSet rs = excute.ExecuteQuery(sql, userId);
+		User user = new User();
+		if(rs.next()){
+			user.setName(rs.getString(DbTable.USER_NAME));
+			user.setId(rs.getInt(DbTable.USER_ID));
+			user.setStatus(rs.getInt(DbTable.USER_STATUS));
+			user.setVervion(rs.getInt(DbTable.USER_VERSION));
+			user.setPassword(rs.getString(DbTable.USER_PASSWORD));
+			user.setNick(rs.getString(DbTable.USER_NICK));
+			user.setFreeTimes(rs.getInt(DbTable.USER_FREETIMES));
+			user.setPhone(rs.getString(DbTable.USER_PHONE));
+			user.setCreateTime(rs.getLong(DbTable.USER_CREATE_TIME));
+			user.setActiveTime(rs.getLong(DbTable.USER_ACTIVE_TIME));
+		}else{
+			excute.closeResource();
+			return null;
+		}
+		excute.closeResource();
+		return user;
 	}
 
 }

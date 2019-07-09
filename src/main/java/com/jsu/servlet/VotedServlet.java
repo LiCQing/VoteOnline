@@ -15,9 +15,12 @@ import com.jsu.pojo.VoteItem;
 import com.jsu.pojo.VoteOption;
 import com.jsu.pojo.VoteSubject;
 import com.jsu.service.ItemService;
+import com.jsu.service.UserService;
 import com.jsu.service.VoteService;
 import com.jsu.service.impl.ItemServieImpl;
+import com.jsu.service.impl.UserServiceImpl;
 import com.jsu.service.impl.VoteServiceImpl;
+import com.jsu.to.HighchartsResult;
 import com.jsu.to.PageResult;
 import com.jsu.util.AttrRequest;
 import com.jsu.util.AttrSesion;
@@ -32,6 +35,7 @@ public class VotedServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	VoteService service = new VoteServiceImpl();
 	ItemService itemService = new ItemServieImpl();
+	UserService userservice = new UserServiceImpl();
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -62,6 +66,8 @@ public class VotedServlet extends HttpServlet {
 				getResult(request,response);
 			}else if(distribute.equals("myvote")){
 				getMyJionVote(request,response);
+			}else if(distribute.equals("charts")){
+				getCharts(request,response);
 			}
 
 		} catch (Exception e) {
@@ -73,6 +79,33 @@ public class VotedServlet extends HttpServlet {
 		// ").append(request.getContextPath());
 
 	}
+	
+	/**
+	 * 获取投票的图表数据
+	 * @param request
+	 * @param response
+	 * @throws Exception 
+	 */
+	private void getCharts(HttpServletRequest request, HttpServletResponse response) throws Exception {
+				//回调函数
+				String str=request.getParameter("Callback");
+				
+				//response.setCharacterEncoding("UTF-8");
+				PrintWriter out = response.getWriter();
+				HighchartsResult res = HighchartsResult.column("教授分布","人种");
+				res.setxAxis("中国","美国");
+				res.addData("中国人","red", 1,2);
+				res.addData("外国人","bulue" ,6,2);
+				String json = JsonUtils.objectToJson(res);
+				
+				 if (str==null||str.equals("")) {
+			        } else {
+			            json =  str + "(" + json + ")";
+			        }
+				
+				out.print(json);
+	}
+
 	/**
 	 * 查看我参与的投票
 	 * @param request
@@ -169,7 +202,8 @@ public class VotedServlet extends HttpServlet {
  * @throws Exception
  */
 	private void updatedHandler(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		VoteSubject subjet = encapsulationToSubjet(request);
+		User user = (User)request.getSession().getAttribute(AttrSesion.CURRENT_USER);
+		VoteSubject subjet = encapsulationToSubjet(request,user);
 		response.sendRedirect(request.getContextPath()+ "my.jsp");
 		service.updateSubject(subjet);
 	}
@@ -215,12 +249,33 @@ public class VotedServlet extends HttpServlet {
 	 * @throws Exception
 	 */
 	private void addHannler(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		VoteSubject subject=encapsulationToSubjet(request);
+		User user = (User)request.getSession().getAttribute(AttrSesion.CURRENT_USER);
+		
+		if(user.getVervion()==0){
+			user.setFreeTimes(userservice.getFreeTimes(user.getId()));
+			if(user.getFreeTimes() == 0){
+				System.out.println("没有次数了");
+				response.sendRedirect(request.getContextPath()+"/filluserinfo.jsp");
+				return ;
+			}else{
+				user.setFreeTimes(user.getFreeTimes()-1);
+				request.getSession().setAttribute(AttrSesion.CURRENT_USER,user);
+			}
+		}
+		
+	
+		VoteSubject subject=encapsulationToSubjet(request,user);
+		
 		if(service.addSubject(subject)){
+			if(user.getVervion() == 0){
+				userservice.reduceFreeTimes(user.getId());
+			}
 			response.sendRedirect(request.getContextPath()+"/my.jsp");
 		}else{
 			response.sendRedirect(request.getContextPath()+"/error.jsp");
 		}
+		
+
 
 	}
 	/**
@@ -228,11 +283,7 @@ public class VotedServlet extends HttpServlet {
 	 * @param request
 	 * @return
 	 */
-	private VoteSubject encapsulationToSubjet(HttpServletRequest request){
-		User user = (User)request.getSession().getAttribute(AttrSesion.CURRENT_USER);
-		if(user == null){
-			return null;
-		}
+	private VoteSubject encapsulationToSubjet(HttpServletRequest request,User user){
 		
 		VoteService service = new VoteServiceImpl();
 		
@@ -250,6 +301,10 @@ public class VotedServlet extends HttpServlet {
 		String endstr = request.getParameter(AttrRequest.SUBJECT_END);
 		long end = DateUtil.StringToMilliseconds(endstr);
 		subject.setEnd(end);
+		
+		String startStr = request.getParameter("voteStart");
+		long start = DateUtil.StringToMilliseconds(startStr);
+		subject.setStart(start);
 		// 类型
 		subject.setType(request.getParameter(AttrRequest.SUBJECT_TYPE));
 		

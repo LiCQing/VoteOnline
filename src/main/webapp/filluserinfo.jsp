@@ -15,7 +15,7 @@
 
 </style>
 <div class="container middle" style="height: 300px">
-<h4> 填写个人信息，定制个性化服务 </h4>
+<h4> 填写基本信息， 增加3次免费次数，<a href="">先免费试用</a></h4>
 	<hr>
 	<div class="userinfo">
 		<form id="infoForm"  action="sign/addinfo" method="post">
@@ -102,10 +102,27 @@
 	$(function(){
 		$("#next").click(function(){
 			if(!isComplet){
+				
+				if($("input[name=userNick]").val()==""){
+					layer.msg("用户昵称还未填写呢");
+					return ;
+				}
+				
+				if($("input[type=radio]:checked").length==0){
+					layer.msg("记得选择性别哦");
+					return ;
+				}
+				
+				if($("input[name=birthday]").val()==""){
+					layer.msg("出生日期要记得");
+					return ;
+				}
+				
 				isComplet = true;
 				$(".userinfo").animate({left:'-100%'},1000);
 				$(".userinfo2").animate({left:'10%'},1000);
 				$("#next").html("完成");
+				$("h4").html("填写更多信息，永久免费发布投票");
 				submit("#infoForm","base");
 			}else{
 				submit("#infoForm2","more");

@@ -16,4 +16,5 @@ public interface VoteService {
 	PageResult getListUserVoted(int userId, int page, int row) throws Exception;
 	public boolean hasPeopleVoted(int subjecid)throws Exception;
 	public int countSubjectVoted(int subjecid)throws Exception;
+	public List<VoteSubject> getHotVoteList(int userId) throws Exception;
 } 

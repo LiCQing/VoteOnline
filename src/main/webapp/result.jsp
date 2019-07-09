@@ -1,7 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	pageEncoding="utf-8"%>
+<script src="http://cdn.highcharts.com.cn/highcharts/highcharts.js"></script>
+<script src="js/exporting.js"></script>
 
 <%@include file="component/header.jsp"%>
+
+
 <style> 
 	img{
 		height: 100px;
@@ -9,7 +13,9 @@
 	.red{
 		color: #EF002A;
 	}
-
+	#container{
+		margin: auto;
+	}
 
 
 </style>
@@ -61,18 +67,57 @@
 			</div>
 			
 		</c:forEach>
-	</div>
 
+	</div>
+	<hr>
+	<div class="Center">
+		<c:if test="${subject.optionNum<5}">
+			<div id="container" style="width: 600px;height:400px;"></div>
+		</c:if>
+		<c:if test="${subject.optionNum>5}">
+			<div id="container" style="width: 800px;height:400px;"></div>
+		</c:if>
+	</div>
 </div>
 
 <%@ include file="component/footer.jsp" %>
 
 </body>
 <script type="text/javascript">
+	
+	
+	
+
 	$(document).ready(function() {
 		calCount();
+		
 	});
-
+	
+	//获取图表数据
+	$(function(){
+			var id = ${subject.id };
+			$.ajax({
+			type: "GET",
+			data:"subjectId=" + id,
+			url: "http://localhost:8080/VoteOnline/vote/charts",
+			dataType: "jsonp", //数据类型为jsonp  
+			jsonp: "Callback", //服务端用于接收callback调用的function名的参数  
+			jsonpCallback: "loadCharts",
+			success: function(data) {},
+			error: function() {
+				voteList.append("<h6>加载失败</h6>");
+			}
+		});
+	});
+	
+	//加载图表数据
+	function loadCharts(data){
+		console.log(data);
+		//console.log(typeof data);
+		Highcharts.chart('container', data);
+	}
+	
+	// 计算百分比
 	function calCount() {
 		var all = 0;
 		var count = $(".countClass");

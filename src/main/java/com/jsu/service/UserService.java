@@ -3,6 +3,7 @@ package com.jsu.service;
 import java.util.List;
 
 import com.jsu.pojo.User;
+import com.jsu.pojo.UserInfo;
 import com.jsu.to.CheckResult;
 import com.jsu.to.PageResult;
 
@@ -26,5 +27,10 @@ public interface UserService {
 	public boolean updateUserBaseInfo(int id, String nick, String sex, long birthday)throws Exception ;
 
 	boolean updateUserMoreInfo(int id, String hobby, String career, String addr) throws Exception;
+	
+	int getFreeTimes(int userIT)throws Exception;
 
+	public boolean reduceFreeTimes(int id)throws Exception;
+
+	public UserInfo getUserInfoById(int userId)throws Exception;
 }

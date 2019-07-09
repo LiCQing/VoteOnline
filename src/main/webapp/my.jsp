@@ -61,15 +61,18 @@
 	
 		<div class="container">
 		
-		<div class="middle"> 
+		<div id="app" class="middle"> 
 					<div id="mobile-menu" class="mobile-nav">
 						<ul>
 							<li> <a class="btn btn-default" data-toggle="tab" href="#home" role="button">我发起的投票</a></li>
 							<li> <a class="btn btn-default" data-toggle="tab" href="#join"  role="button">我参与的投票</a></li>
 							<c:if test="${currentUser.vervion==2 }">
 								<li> <a class="btn btn-default" data-toggle="tab"  href="#usermanage"  role="button">用户管理</a></li>
+								<li> <a class="btn btn-default" data-toggle="tab"  href="#allvote"  role="button">所有投票</a></li>
 							</c:if>
+							<li>   <a class="btn btn-default" data-toggle="tab" href="#userInfo" role="button">个人信息</a></li>
 							<li>   <a class="btn btn-default" data-toggle="tab" href="#updatePass" role="button">修改密码</a></li>
+							
 						
 						</ul>
 					</div>
@@ -77,13 +80,19 @@
 						<div id="myTabContent" class="tab-content">
 							<div class="tab-pane fade in active" id="home">
 									<div class="row">
-										<div class="col-md-10"  >
+										<div class="col-md-9"  >
 											<h2>我发起的投票</h2>
 												
 										</div>
-										<div class="col-md-2" style="height: 63px;position: relative;" >
+										<div class="col-md-3" style="height: 63px;position: relative;" >
 											<c:if test="${currentUser.vervion==0 }">
-												<a style="position: absolute;bottom: 0">暂时不可发起投票，请联系管理员</a>
+												<c:if test="${currentUser.freeTimes==0}">
+												  <a href="filluserinfo.jsp" style="position: absolute;bottom: 0">
+												</c:if>
+												<c:if test="${currentUser.freeTimes!=0}">
+												  <a href="add.jsp" style="position: absolute;bottom: 0">
+												</c:if>
+												        剩余免费发起投票次数：${currentUser.freeTimes} </a>
 											</c:if>
 											<c:if test="${currentUser.vervion!=0 }">
 												<a href="add.jsp" style="position: absolute;bottom: 0"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>发起投票</a>
@@ -145,6 +154,68 @@
 													  </ul>
 												</nav>
 							</div>
+							
+							
+							<div class="tab-pane fade" id="allvote">
+										<div class="row">
+													<div class="col-md-10"  >
+														<h2>所有用户投票</h2>
+													</div>
+												</div>
+												
+												<hr>
+												<div id="myjoinvote">
+													<table class="table table-striped table-hover">
+															<thead>
+														        <tr>
+														          <th>#</th>
+														          <th>状态</th>
+														          <th>标题</th>
+														          <th>热度</th>
+														          <th class="center">操作</th>
+														        </tr>
+														      </thead>
+														      <tbody>
+															  </tbody>
+														</table>
+												</div>
+												<nav id="joinPage" aria-label="">
+													  <ul class="pager">
+													    <li class="previous"><a role="button"><span aria-hidden="true">&larr;</span>上一页</a></li>
+													    <li class="next"><a role="button">下一页<span aria-hidden="true">&rarr;</span></a></li>
+													  </ul>
+												</nav>
+							</div>
+							
+							
+							<div class="tab-pane fade" id="userInfo">
+												<hr>
+										 <div class="userInfo">
+												
+										 <div id="baseInfo" class="panel panel-info"> 
+										 	<div class="panel-heading"> <h4 class="center">个人信息</h4></div>
+											 <div class="panel-body">
+											    <com-info :title="'用户名'" :text="myinfo.name"></com-info>
+											    <com-info :title="'昵称'" :text="myinfo.nick"></com-info>
+											    <com-info :title="'手机号'" :text="myinfo.phone"></com-info>
+											    <com-info :title="'性别'" :text="getSex"></com-info>
+											    <com-info :title="'生日'" :text="getbirthDay"></com-info>
+											    <com-info :title="'职业'" :text="getcareer"></com-info>
+											    <com-info :title="'所在地'" :text="getaddr"></com-info>
+											    <com-info :title="'爱好'" :text="getHobby"></com-info>
+											    <com-info :title="'加入网站'" :text="getInnerDay + '天'"></com-info>
+											  </div>
+											  <c:if test="${currentUser.vervion == 0}">
+											  <div class="panel-footer"> <a href="filluserinfo.jsp">补全个人信息可获得额外发布投票机会</a></div>
+												 
+											  </c:if>
+										 </div>
+										 
+										 
+										 </div>
+												
+							</div>
+							
 							<div class="tab-pane fade" style="height: 500px" id="updatePass">
 								<form>
 									  <div class="form-group">
@@ -195,7 +266,7 @@
 										</nav>
 											</div>
 										</div>
-										
+									
 							</c:if>
 						</div>
 					</div>
@@ -210,6 +281,7 @@
 				  </ul>
 			</div>
 			
+												
 		
 			
 			
@@ -218,6 +290,19 @@
 			</div>
 			
 		</div>
+		
+													<div id ="userinfoDef" class="None">
+													    <com-info :title="'用户名'" :text="myinfo.name"></com-info>
+													    <com-info :title="'昵称'" :text="myinfo.nick"></com-info>
+													    <com-info :title="'手机号'" :text="myinfo.phone"></com-info>
+													    <com-info :title="'性别'" :text="getSex"></com-info>
+													    <com-info :title="'生日'" :text="getbirthDay"></com-info>
+													    <com-info :title="'职业'" :text="getcareer"></com-info>
+													    <com-info :title="'所在地'" :text="getaddr"></com-info>
+													    <com-info :title="'爱好'" :text="getHobby"></com-info>
+													    <com-info :title="'加入网站'" :text="getInnerDay + '天'"></com-info>
+													  </div>
+		
 		<div class="footer">
 		</div>
 	</body>
@@ -227,6 +312,7 @@
 	var userPage=1;
 	var myvotePage=1;
 	var myjoinPage=1;
+	var allVotePage = 1;
 	
 	//管理员模块
 	function getVersionClass(type){
@@ -296,6 +382,44 @@
 		//console.log(userid);
 	}
 	
+	function changeUserPre(){
+		userPage--;
+		getUserList();
+	}
+	
+	function changeUserNext(){
+		userPage++;
+		getUserList();
+	}
+	var shoudShowtr;
+	function showit(){
+		var div = $(userinfoDef).clone();
+		div.attr("id","13548");
+		
+		div.removeClass("None");
+		var td=$("<td colspan='5'></td>");
+		td.append(div);
+		
+		$("#userinfotr").remove();
+		
+		var addtr =$("<tr id='userinfotr'></tr>")
+		addtr.append(td);
+		
+		$(shoudShowtr).after(addtr);
+	}
+	
+	function lookUserInfo(userId,tr){
+		shoudShowtr = tr;
+		$.get("admini/userinfo","id="+userId,function(data){
+			console.log(data);
+			someOne.myinfo=eval("("+data+")");
+			
+			//setTimeout("showit()",3000,tr);
+			
+			
+		});
+	}
+	
 	function getUserList(){
 		var jsoData = Ajax("admini/userlist", "page="+userPage+"&row=6");
 		var page = eval("(" + jsoData + ")");
@@ -306,20 +430,14 @@
 			pageNav.find(".previous").unbind();
 		}else{
 			pageNav.find(".previous").removeClass("disabled");
-			pageNav.find(".previous").click(function(){
-				userPage--;
-				getUserList();
-			});
+			pageNav.find(".previous").attr("onclick","changeUserPre()");
 		}
 		if(!page.hasNext){
 			pageNav.find(".next").addClass("disabled");
 			pageNav.find(".next").unbind();
 		}else{
 			pageNav.find(".next").removeClass("disabled");
-			pageNav.find(".next").click(function(){
-				userPage++;
-				getUserList();
-			});
+			pageNav.find(".next").attr("onclick","changeUserNext()");
 		}
 		
 		var userList =page.list;
@@ -329,7 +447,7 @@
 			//console.log(i);
 			//console.log(userList[i]);
 			//var tr ="<tr class='"+ getVersionClass(userList[i].vervion) +"'>";
-			var tr = $("<tr></tr>")
+			var tr = $("<tr onclick=lookUserInfo("+userList[i].id+",this)></tr>")
 			tr.addClass(getVersionClass(userList[i].vervion));
 			var index  =(userPage-1)*6 + Number(i)+1;
 			tr.append("<th scope='row'>" +index+ "</th>");
@@ -428,6 +546,7 @@
 			getVote();
 			getJoin();
 			getUserList();
+			getAllVote();
 			
 			$("#changePass").click(function(){
 				var old = $("#oldPass").val();
@@ -622,6 +741,267 @@
 					}
 			}
 		}
+		
+		//获取所有投票
+		function nextPageVote(){
+			allVotePage--;
+			getAllVote();
+		}
+		
+		function prePageVote(){
+			allVotePage++;
+			getAllVote();
+		}
+		function getAllVote(){
+			var jsoData = Ajax("admini/allvote", "row=6&page="+allVotePage);
+			var pagedata = eval("(" + jsoData + ")");
+			console.log("------所有投票---------");
+			console.log(pagedata);
+			var pageNav = $("#allvote");
+			if(!pagedata.hasPre){
+				pageNav.find(".previous").addClass("disabled");
+				pageNav.find(".previous").unbind();
+			}else{
+				pageNav.find(".previous").removeClass("disabled");
+				pageNav.find(".previous").attr("onclick","nextPageVote()");
+			}
+			if(!pagedata.hasNext){
+				pageNav.find(".next").addClass("disabled");
+				pageNav.find(".next").unbind();
+			}else{
+				pageNav.find(".next").removeClass("disabled");
+				pageNav.find(".next").attr("onclick","prePageVote()"); 
+			}
+			var joinTable=$("#allvote").find("tbody");
+			joinTable.html("");
+			var dataObj = pagedata.list;			
+			if(dataObj.length==0){
+			}else{
+				for(i in dataObj){
+					console.log(dataObj[i]);
+					var tr = $("<tr></tr>")  //一行
+					var index  =(allVotePage-1)*6 + Number(i)+1;
+					tr.append("<th scope='row'>" +index+ "</th>");  //行号
+					//状态
+					var status = "";
+					if(isEnd(dataObj[i].end)){
+						status ="<span class=''> 已结束 </sapn>"
+					}else{
+						status ="<span class=''> 进行中 </sapn>"
+					}
+				
+					tr.append("<td>"+status+"</td>");  
+					
+					tr.append("<td>"+dataObj[i].titile+"</td>");  //标题
+				
+					//参与人数
+					var str = "暂无人参与";
+					if(dataObj[i].count > 0){
+						str = "已有"+dataObj[i].count+"人参与";
+					}
+					
+					tr.append("<td >"+str+"</td>");
+					
+					//查看
+					 var str = "<a  class='btn btn-default' href='voted/result?id=" + dataObj[i].id +"'> 查看 </a><a  class='btn btn-default' onclick='AdmiDel("+dataObj[i].id+")' > 删除 </a>";
+					
+					tr.append("<td class='center'> "+str+"  </td>");
+					 
+					joinTable.append(tr)
+					
+				
+					}
+			}
+		}
+		
+		function AdmiDel(id){
+			var r = confirm("确认删除该投票？")
+			if(!r ) return ;
+			$.post("admini/delete","id="+id,function(data){
+				if(data=='true'){
+					getAllVote();
+				}else{
+					layer.msg("删除失败");
+				}
+			});
+		}
+		
+		//Vue扩展
+		Vue.component('com-info',{
+			props: ['title','text'],
+			template:"<div class='row'> <label class='col-md-2 control-label text-right'>{{title}}:</label>" + 
+			  "<label class='col-md-10 control-label'>{{text}}</label> </div>"	
+		}
+		);
+		
+		var arrpro=[{id:'0',value:"请选择省份"},
+		            {id:'1',value:"河北省"},
+		            {id:'2',value:"湖南省"}];
+		
+		var arrcit=[[{id:'0',value:"请选择城市"}],
+		            [{id:'1',value:"石家庄"},{id:'2',value:"邯郸"},{id:'3',value:"唐山"}],
+		            [{id:'4',value:"长沙"},{id:'5',value:"张家界"},{id:'6',value:"吉首"}]];
+		
+		var arrhobby=[{id:'0',value:"运动"},
+		              {id:'1',value:"娱乐"},
+			          {id:'2',value:"冒险"},
+		              {id:'3',value:"收藏"},
+			          {id:'4',value:"乐器"},
+		              {id:'5',value:"文艺"},
+			          {id:'6',value:"游戏"},
+		              {id:'7',value:"手工"},
+			          {id:'8',value:"学习"}];
+		
+		var arrCcate=[{id:'0',value:"请选择职业类别"},
+					{id:'0',value:"IT业"},
+					{id:'0',value:"教育业"},
+					{id:'0',value:"其他行业"}];
+		
+		var arrCdetail=[[{id:'0',value:"请选择职业"}],
+		                [{id:'1',value:"程序员"},{id:'2',value:"系统分析员"},{id:'3',value:"产品经理"},{id:'4',value:"测试工程师"}],
+		                [{id:'5',value:"任课教师"},{id:'6',value:"教导主任"}],[{id:'7',value:"自由职业者"}]]
+		
+		var vm = new Vue({
+			el:'#userInfo',
+			data:{
+				userInfo:'',
+				myinfo:'',
+			},
+			computed:{
+				getSex:function(){
+					if(this.myinfo.sex == null){
+						return '未填写';
+					}
+					return this.myinfo.sex==1?'男':'女';
+				},
+				getInnerDay :function(){
+					var nowTime = ((new Date()).valueOf())/1000;
+					console.log(nowTime);
+					console.log(this.myinfo.createTime);
+					var days = parseInt((nowTime - this.myinfo.createTime)/(24*3600));
+					
+					return days;
+				},
+				getbirthDay : function(){
+					var date = new Date(this.myinfo.birthDay);
+					console.log(date);
+					var y = date.getFullYear()+'-';
+					var m = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+					var d = D = date.getDate() + ' ';
+					return y+m+d;
+				},
+				getHobby:function(){
+					var h = this.myinfo.hobby;
+					if(h==null){return '未填写'};
+					var hs = h.split(',');
+					var str ='';
+					for(var i in hs){
+						str += arrhobby[i].value+" ";
+					}
+					return str;
+				},
+				getaddr:function(){
+					if(this.myinfo.addr == 0){return '未填写';}
+					for(var i =0 ; i<arrcit.length;i++ ){
+						var city = arrcit[i];
+						for(var j = 0 ; j < city.length;j++){
+							if(this.myinfo.addr ==city[j].id ){return city[j].value;}
+						}
+					}
+					return '未知';
+				},
+				getcareer:function(){
+					if(this.myinfo.addr == 0){return '未填写';}
+					for(var i =0 ; i<arrCdetail.length;i++ ){
+						var city = arrCdetail[i];
+						for(var j = 0 ; j < city.length;j++){
+							if(this.myinfo.addr ==city[j].id ){return city[j].value;}
+						}
+					}
+					return '未知';
+				}
+			},
+			methods:{
+				
+			}
+		});
+		
+		var someOne = new Vue({
+			el:'#userinfoDef',
+			data:{
+				myinfo:'',
+			},
+			computed:{
+				getSex:function(){
+					if(this.myinfo.sex == null){
+						return '未填写';
+					}
+					return this.myinfo.sex==1?'男':'女';
+				},
+				getInnerDay :function(){
+					var nowTime = ((new Date()).valueOf())/1000;
+					console.log(nowTime);
+					console.log(this.myinfo.createTime);
+					var days = parseInt((nowTime - this.myinfo.createTime)/(24*3600));
+					
+					return days;
+				},
+				getbirthDay : function(){
+					var date = new Date(this.myinfo.birthDay);
+					console.log(date);
+					var y = date.getFullYear()+'-';
+					var m = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+					var d = D = date.getDate() + ' ';
+					return y+m+d;
+				},
+				getHobby:function(){
+					var h = this.myinfo.hobby;
+					if(h==null){return '未填写'};
+					var hs = h.split(',');
+					var str ='';
+					for(var i in hs){
+						str += arrhobby[i].value+" ";
+					}
+					return str;
+				},
+				getaddr:function(){
+					if(this.myinfo.addr == 0){return '未填写';}
+					for(var i =0 ; i<arrcit.length;i++ ){
+						var city = arrcit[i];
+						for(var j = 0 ; j < city.length;j++){
+							if(this.myinfo.addr ==city[j].id ){return city[j].value;}
+						}
+					}
+					return '未知';
+				},
+				getcareer:function(){
+					if(this.myinfo.addr == 0){return '未填写';}
+					for(var i =0 ; i<arrCdetail.length;i++ ){
+						var city = arrCdetail[i];
+						for(var j = 0 ; j < city.length;j++){
+							if(this.myinfo.addr ==city[j].id ){return city[j].value;}
+						}
+					}
+					return '未知';
+				}
+			},
+			methods:{
+				
+			},
+			updated(){
+				console.log("更新好了");
+				showit();
+			}
+		});
+		
+		//
+		$.post('user/myinfo',"",function(data){
+			vm.myinfo=eval("(" + data +")");
+			
+			console.log(data);
+			console.log(vm.myinfo);
+			
+		});
 		
 
 		

@@ -6,9 +6,11 @@ import java.util.List;
 import com.jsu.dao.UserDao;
 import com.jsu.dao.impl.UserDaoImpl;
 import com.jsu.pojo.User;
+import com.jsu.pojo.UserInfo;
 import com.jsu.service.UserService;
 import com.jsu.to.CheckResult;
 import com.jsu.to.PageResult;
+import com.jsu.util.DbTable;
 
 public class UserServiceImpl implements UserService {
 	private UserDao userDao = new UserDaoImpl();
@@ -35,7 +37,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User login(String name, String pass) throws Exception {
 		
-		return userDao.getUserById(name,pass);
+		return userDao.getUserByPass(name,pass);
 	}
 	/**
 	 * 修改
@@ -54,7 +56,7 @@ public class UserServiceImpl implements UserService {
 		
 		PageResult result = new PageResult();
 		result.setCurrentPage(p);
-		result.setList(userDao.getUserList((p-1)*r, (p-1)*r + r));
+		result.setList(userDao.getUserList((p-1)*r, r));
 		result.setHasPre(p==1?false:true);
 		int totle = userDao.getTotlePage(r);
 		result.setHasNext(p==totle?false:true);
@@ -81,5 +83,30 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean updateUserMoreInfo(int id, String hobby, String career, String addr) throws Exception {
 		return userDao.updateUserMoreInfo(id,hobby,career,addr);
+	}
+	/**
+	 * 获取用户可发次数
+	 */
+	@Override
+	public int getFreeTimes(int userId) throws Exception {
+		return userDao.getFreeTimes(userId);
+	}
+	/**
+	 * 更新用户免费次数
+	 */
+	@Override
+	public boolean reduceFreeTimes(int id) throws Exception {
+		return userDao.updateUserFreeTimes(id);
+	}
+	
+	/**
+	 * 获取用户全部信息
+	 * @throws Exception 
+	 */
+	@Override
+	public UserInfo getUserInfoById(int userId) throws Exception {
+		UserInfo info = userDao.getUserMoreInfo(userId);
+		info.setInfo(userDao.getUerBaseInfoById(userId));
+		return info;
 	}
 }

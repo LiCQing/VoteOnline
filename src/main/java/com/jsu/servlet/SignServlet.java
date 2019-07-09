@@ -104,6 +104,8 @@ public class SignServlet extends HttpServlet {
 			  if(service.updateUserMoreInfo(user.getId(),StringUtils.join(hobby, ","),careerPosition,city)){
 				  out.print("ok");
 			  }
+			  user.setVervion(1);
+			  request.getSession().setAttribute(AttrSesion.CURRENT_USER, user);
 		  }
 		 
 		  
@@ -210,8 +212,8 @@ public class SignServlet extends HttpServlet {
 		user.setPassword(pass);
 		user.setPhone(request.getParameter(AttrRequest.USER_PHONE));
 		
-		user.setCreateTime(new Date().getTime());
-		user.setActiveTime(new Date().getTime());
+		user.setCreateTime(DateUtil.getTimestamp());
+		user.setActiveTime(DateUtil.getTimestamp());
 		
 		return user;
 	}

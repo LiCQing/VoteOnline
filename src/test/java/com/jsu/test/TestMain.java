@@ -24,7 +24,8 @@ public class TestMain {
 		System.out.println(s);
 		String time= DateUtil.MilinsecondsToStringDate(s);
 		System.out.println(time);*/
-		testUSerDao();
+		//testUSerDao();
+		System.out.println(new Date().getTime()/1000);
 	
 		
 	}
