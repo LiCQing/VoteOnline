@@ -195,15 +195,16 @@
 										 <div id="baseInfo" class="panel panel-info"> 
 										 	<div class="panel-heading"> <h4 class="center">个人信息</h4></div>
 											 <div class="panel-body">
-											    <com-info :title="'用户名'" :text="myinfo.name"></com-info>
-											    <com-info :title="'昵称'" :text="myinfo.nick"></com-info>
-											    <com-info :title="'手机号'" :text="myinfo.phone"></com-info>
-											    <com-info :title="'性别'" :text="getSex"></com-info>
-											    <com-info :title="'生日'" :text="getbirthDay"></com-info>
-											    <com-info :title="'职业'" :text="getcareer"></com-info>
-											    <com-info :title="'所在地'" :text="getaddr"></com-info>
-											    <com-info :title="'爱好'" :text="getHobby"></com-info>
-											    <com-info :title="'加入网站'" :text="getInnerDay + '天'"></com-info>
+											    <com-info title="用户名" :text="myinfo.name"></com-info>
+											    <com-info title="昵称" :text="myinfo.nick"></com-info>
+											    <com-info title="手机号" :text="myinfo.phone"></com-info>
+											    <com-info title='性别' :text="getSex"></com-info>
+											    <com-info title='生日' :text="getbirthDay"></com-info>
+											    <com-info title='职业' :text="getcareer"></com-info>
+											    <com-info title='所在地' :text="getaddr"></com-info>
+											    <com-info title='爱好' :text="getHobby"></com-info>
+											    <com-info title='加入网站' :text="getInnerDay + '天'"></com-info>
+											    <com-info title="最近登陆" :text="getActiveTime"></com-info>
 											  </div>
 											  <c:if test="${currentUser.vervion == 0}">
 											  <div class="panel-footer"> <a href="filluserinfo.jsp">补全个人信息可获得额外发布投票机会</a></div>
@@ -301,6 +302,7 @@
 													    <com-info :title="'所在地'" :text="getaddr"></com-info>
 													    <com-info :title="'爱好'" :text="getHobby"></com-info>
 													    <com-info :title="'加入网站'" :text="getInnerDay + '天'"></com-info>
+													    <com-info title="最近登陆" :text="getActiveTime"></com-info>
 													  </div>
 		
 		<div class="footer">
@@ -875,20 +877,36 @@
 					return this.myinfo.sex==1?'男':'女';
 				},
 				getInnerDay :function(){
+					if(this.myinfo.createTime == 0){
+						return "0";
+					}
 					var nowTime = ((new Date()).valueOf())/1000;
-					console.log(nowTime);
+					console.log(nowTime + " 现在时间 ");
 					console.log(this.myinfo.createTime);
 					var days = parseInt((nowTime - this.myinfo.createTime)/(24*3600));
 					
 					return days;
 				},
 				getbirthDay : function(){
-					var date = new Date(this.myinfo.birthDay);
-					console.log(date);
+					if(this.myinfo.birthDay==0){
+						return "未填写";
+					}
+					var date = new Date(this.myinfo.birthDay*1000);
 					var y = date.getFullYear()+'-';
 					var m = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
 					var d = D = date.getDate() + ' ';
 					return y+m+d;
+				},
+				getActiveTime : function(){
+					var date = new Date(this.myinfo.activeTime*1000);
+					console.log(this.myinfo.activeTime);
+					Y = date.getFullYear() + '-';
+					M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+					D = date.getDate() + ' ';
+					h = date.getHours() + ':';
+					m = date.getMinutes() + ':';
+					s = date.getSeconds(); 
+					return Y+M+D+h+m+s;
 				},
 				getHobby:function(){
 					var h = this.myinfo.hobby;
@@ -938,16 +956,26 @@
 					}
 					return this.myinfo.sex==1?'男':'女';
 				},
+				getActiveTime : function(){
+					var date = new Date(this.myinfo.activeTime*1000);
+					Y = date.getFullYear() + '-';
+					M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+					D = date.getDate() + ' ';
+					h = date.getHours() + ':';
+					m = date.getMinutes() + ':';
+					s = date.getSeconds(); 
+					return Y+M+D+h+m+s;
+				},
 				getInnerDay :function(){
 					var nowTime = ((new Date()).valueOf())/1000;
-					console.log(nowTime);
-					console.log(this.myinfo.createTime);
 					var days = parseInt((nowTime - this.myinfo.createTime)/(24*3600));
-					
 					return days;
 				},
 				getbirthDay : function(){
-					var date = new Date(this.myinfo.birthDay);
+					if(this.myinfo.birthDay==0){
+						return "未填写";
+					}
+					var date = new Date(this.myinfo.birthDay*1000);
 					console.log(date);
 					var y = date.getFullYear()+'-';
 					var m = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';

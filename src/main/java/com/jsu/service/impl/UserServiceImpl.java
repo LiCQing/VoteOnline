@@ -10,6 +10,7 @@ import com.jsu.pojo.UserInfo;
 import com.jsu.service.UserService;
 import com.jsu.to.CheckResult;
 import com.jsu.to.PageResult;
+import com.jsu.util.DateUtil;
 import com.jsu.util.DbTable;
 
 public class UserServiceImpl implements UserService {
@@ -36,8 +37,11 @@ public class UserServiceImpl implements UserService {
 	}
 	@Override
 	public User login(String name, String pass) throws Exception {
-		
-		return userDao.getUserByPass(name,pass);
+		User user = userDao.getUserByPass(name,pass);
+		if(user!=null){
+			userDao.updateUserActiveTime(user.getId(), DateUtil.getTimestamp());
+		}
+		return user;
 	}
 	/**
 	 * 修改

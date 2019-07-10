@@ -204,7 +204,7 @@ public class VotedServlet extends HttpServlet {
 	private void updatedHandler(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		User user = (User)request.getSession().getAttribute(AttrSesion.CURRENT_USER);
 		VoteSubject subjet = encapsulationToSubjet(request,user);
-		response.sendRedirect(request.getContextPath()+ "my.jsp");
+		response.sendRedirect(request.getContextPath()+ "/my.jsp");
 		service.updateSubject(subjet);
 	}
 	/**

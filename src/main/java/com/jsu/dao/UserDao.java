@@ -38,5 +38,7 @@ public interface UserDao {
 	UserInfo getUserMoreInfo(int userId)throws Exception ;
 	
 	User getUerBaseInfoById(int userId)throws Exception ;
+	
+	boolean updateUserActiveTime(int userId,Long timeStamp) throws Exception;
 
 }

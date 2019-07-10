@@ -265,5 +265,15 @@ public class UserDaoImpl implements UserDao{
 		excute.closeResource();
 		return user;
 	}
+	/**
+	 * 更新用户登陆时间
+	 */
+	@Override
+	public boolean updateUserActiveTime(int userId, Long timeStamp) throws Exception {
+		SqlExcute exe = new SqlExcute(JdbcUtil.getConnection());
+		boolean re = exe.ExecuteUpdate(DbTable.UPDATE_ACTIVE_TIME, timeStamp,userId);
+		exe.closeResource();
+		return re;
+	}
 
 }

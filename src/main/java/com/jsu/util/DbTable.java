@@ -69,5 +69,7 @@ public final class DbTable {
 			+ "from (SELECT vo_id,vu_sex as sex from vote_item vi JOIN vote_user vu on vi.vu_user_id = vu.vu_user_id "
 			+ ") as iu right join vote_option as vo on iu.vo_id = vo.vo_id where vs_id = ? GROUP BY vo_id";
 	
+	//更新用户活跃时间
+	public static final String UPDATE_ACTIVE_TIME="update "+ USER + " SET " + USER_ACTIVE_TIME + " = ? WHERE " + USER_ID + " = ?";
 
 }
