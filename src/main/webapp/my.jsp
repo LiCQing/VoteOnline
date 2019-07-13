@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
 <%@ include file="component/header.jsp" %>
-
+<title>我的</title>
 
 <style type="text/css">
 		* {
@@ -586,9 +586,15 @@
 		
 		//载入投票列表
 		function isEnd(time){
-			var timestamp=new Date().getTime();
+			var timestamp=(new Date().getTime() / 1000);
 			return time < timestamp;
 		}
+		
+		function isStart(time){
+			var timestamp=(new Date().getTime() / 1000);
+			return time > timestamp;
+		}
+		
 		
 		function getVote(){ //我的投票
 			voteList=$("#myvoteList");
@@ -642,7 +648,12 @@
 						if(isEnd(dataObj[i].end)){
 							status ="<span class=''> 已结束 </sapn>"
 						}else{
-							status ="<span class=''> 进行中 </sapn>"
+							
+							if(isStart(dataObj[i].start)){
+								status ="<span class=''> 未开始 </sapn>"
+							}else{
+								status ="<span class=''> 进行中 </sapn>"
+							}
 						}
 					
 						tr.append("<td>"+status+"</td>");  
@@ -717,7 +728,11 @@
 					if(isEnd(dataObj[i].end)){
 						status ="<span class=''> 已结束 </sapn>"
 					}else{
-						status ="<span class=''> 进行中 </sapn>"
+						if(isStart(dataObj[i].start)){
+							status ="<span class=''> 未开始 </sapn>"
+						}else{
+							status ="<span class=''> 进行中 </sapn>"
+						}
 					}
 				
 					tr.append("<td>"+status+"</td>");  
@@ -881,8 +896,7 @@
 						return "0";
 					}
 					var nowTime = ((new Date()).valueOf())/1000;
-					console.log(nowTime + " 现在时间 ");
-					console.log(this.myinfo.createTime);
+					console.log((nowTime - this.myinfo.createTime));
 					var days = parseInt((nowTime - this.myinfo.createTime)/(24*3600));
 					
 					return days;
@@ -968,6 +982,7 @@
 				},
 				getInnerDay :function(){
 					var nowTime = ((new Date()).valueOf())/1000;
+					console.log((nowTime - this.myinfo.createTime));
 					var days = parseInt((nowTime - this.myinfo.createTime)/(24*3600));
 					return days;
 				},

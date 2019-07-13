@@ -58,6 +58,7 @@ public final class DbTable {
 		" select *,count(vuser) as count from "+
 		" ( select DISTINCT vs.*,vi.vu_user_id as vuser " +
 			" from vote_subject vs join vote_item vi on vs.vs_id = vi.vs_id) as si " +
+		" where vs_end > ? " +
 		" GROUP BY vs_id " +
 		" order by count desc " +
 		 " limit 0,6 ";

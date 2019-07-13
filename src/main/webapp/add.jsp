@@ -107,8 +107,15 @@
 
 		<div class="container">
 			<div class="middle">
-				<div class="title">
-					<h2>${subject==null?'添加新投票':'修改投票'}</h2>
+				<div class="row">
+					<div class="title col-md-6">
+						<h2>${subject==null?'添加新投票':'修改投票'}</h2>
+					</div>
+					<div class="title col-md-6 right">
+						<c:if test="${currentUser.vervion == 0 }">
+							剩余免费发起投票次数： ${currentUser.freeTimes }
+						</c:if>
+					</div>
 				</div>
 				<hr>
 				<form id="subjectForm"   id="voteForm" action="${subject==null?'voted/add':'voted/update2' }" method="post">
@@ -154,9 +161,9 @@
 						<label for="exampleInputEmail1">截止日期(当日零点截止)  </label>
 						<div class="input">
 							<input id="endDate" onchange="checkTime()" type="date" name="voteEnd" value="${subject.endDay}" />
-							<button class="btn btn-default" onclick="changeTime(1,4)" type="button">三天</button>
-							<button class="btn btn-default" onclick="changeTime(1,8)" type="button">一周</button>
-							<button class="btn btn-default" onclick="changeTime(1,16)" type="button">十五天</button>
+							<button class="btn btn-default" onclick="changeTime(1,3)" type="button">三天</button>
+							<button class="btn btn-default" onclick="changeTime(1,7)" type="button">一周</button>
+							<button class="btn btn-default" onclick="changeTime(1,15)" type="button">十五天</button>
 							<button class="btn btn-default" onclick="changeTime(1,30)"type="button">一月</button>
 						</div><!-- /input-group -->
 					</div>
@@ -331,15 +338,15 @@
 			//载入目前选项个数
 			optionNum = $("input[name=option]").length;
 			//alert($('#endDate').val());
-			//初始化时间为一周后
-			if ($('#endDate').val() == null || $('#endDate').val() == "") {
-				changeTime(1,7);
-			}
 			
 			//初始化时间为一周后
 			if ($('#startDate').val() == null || $('#startDate').val() == "") {
 				changeTime(0,0);
-			}
+			};
+			
+			if ($('#endDate').val() == null || $('#endDate').val() == "") {
+				changeTime(1,7);
+			};
                
             });
 		
@@ -348,10 +355,12 @@
 			var inputTime;
 			if(type==0){
 				console.log("startDate");
+				
 				time.setDate(time.getDate() + day);
 				inputTime = $("#startDate");
 			}else{
 				console.log("endDate");
+				time = new Date(Date.parse($('#startDate').val() + " 0:0"));
 				time.setDate(time.getDate() + day);
 				inputTime = $("#endDate");
 			}
@@ -365,6 +374,14 @@
 		function checkTime(){
 			console.log($('#endDate').val());
 			var startTime = new Date(Date.parse($('#endDate').val() + " 0:0"));
+			var starttTime = new Date(Date.parse($('#startDate').val() + " 0:0"));
+			if(startTime.valueOf() < starttTime.valueOf()){
+				changeTime(0, 0);
+				changeTime(1, 7);
+				layer.msg("没开始就结束了！");
+				return ;
+			}
+			console.log(startTime);
 			var date = new Date();
 			if(!(startTime>date)){
 				layer.msg("时光易逝,请展望未来");
@@ -494,6 +511,13 @@
 			return true;
 		}
 
+		/*function checkTime(){
+			var end = $("#endDate");
+			var start =$("#startDate");
+			console.log(new Date(end.val()));
+			
+		}*/
+		
 		function upload(btn) {
 
 			var image = new FormData();

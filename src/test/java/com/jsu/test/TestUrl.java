@@ -57,6 +57,7 @@ public class TestUrl {
 		HighchartsResult rs = as.getOptionSex(659);
 		System.out.println(JsonUtils.objectToJson(rs));*/
 		
+		
 	}
 	
 	

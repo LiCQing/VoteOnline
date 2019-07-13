@@ -2,7 +2,7 @@
 	pageEncoding="utf-8"%>
 <script src="http://cdn.highcharts.com.cn/highcharts/highcharts.js"></script>
 <script src="js/exporting.js"></script>
-
+<title>投票结果</title>
 <%@include file="component/header.jsp"%>
 
 

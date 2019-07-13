@@ -92,7 +92,7 @@ function resetContent(){
 	document.getElementById("repspan").innerHTML = "";
 }
 
-var TEL_REGEXP = /^1\d{2}$/;
+var TEL_REGEXP = /^1\d{3}$/;
 
 function validateTel(tel){
       if(TEL_REGEXP.test(tel)){
@@ -123,6 +123,10 @@ $(document).ready(function() {
 	});
 	
 	$("#phone").blur(function(){
+			console.log($("#phone").val());
+			if($("#phone").val()==''){
+				return ;
+			}
 			$.get("check/phone/" +$("#phone").val() , function(data){
 				var json = eval("("+data+")");
 				if(json.result){

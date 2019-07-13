@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
-
+<title>投票</title>
 <%@ include file="component/header.jsp" %>
 <style>
 	
@@ -164,7 +164,9 @@
 				<div class="center topBorder">
 				<br>
 				</div>
-				
+				<div>
+					<input  type="submit" class="btn btn-default None" style="width: 100%;" value="提交选择"> 
+				</div>
 			</form>
 		</div>
 </div>
@@ -234,8 +236,9 @@ function select(option,event){
 	
 	if($(".selected").length !=0){
 		$(".btn-default").removeClass("None");
+		$("input[type=submit]").removeClass("None");
 	}else{
-		$(".btn-default").addClass("None");
+		$("input[type=submit]").addClass("None");
 	}
 }
 

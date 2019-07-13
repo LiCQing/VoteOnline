@@ -20,8 +20,8 @@ import org.apache.commons.net.ftp.FTPReply;
  * @version 1.0
  */
 public class FtpUtil {
-	 public static final String IMAGE_URL="http://192.168.139.130/images/";
-	 public static final String IP="192.168.139.130";
+	 public static final String IMAGE_URL="http://192.168.139.131/images/";
+	 public static final String IP="192.168.139.131";
 	/** 
 	 * Description: 向FTP服务器上传文件 
 	 * @param host FTP服务器hostname 

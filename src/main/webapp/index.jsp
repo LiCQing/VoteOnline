@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-
+<title>FOLLOW YOUR HEART</title>
 <%@include file="component/header.jsp" %>
 
  <style>
@@ -80,7 +80,7 @@
 	    	
 	    </div>
 	    <div class="col-md-2">
-	    	<div><a class="btn btn-danger" href="add.jsp">免费发起投票</a> </div>
+	    	<div><a target="_blank" class="btn btn-danger" href="add.jsp">免费发起投票</a> </div>
 	    </div>
 	   </div> <!-- 次头部 -->
 	   
@@ -271,6 +271,7 @@
 				//console.log(item.url);
 				img.attr("src",item.url);
 			}
+		
 			
 			//设置描述
 			var desc= col.find(".desc");
@@ -278,26 +279,54 @@
 			if(item.count==0){
 				num="还没有人投票呢，快来做第一个投票的人吧";
 			}
+			
+			var nowTime = ((new Date()).valueOf())/1000;
+			var flag = item.end-nowTime ;
+			console.log(item.end +" " + nowTime );
+			console.log(item.endDay + "  " + flag);
+			
 			var doingStart="";
 			if(item.startStatus){
 				doingStart="进行中，截止时间:"+ item.endDay +"<br>"
 			}else{
 				doingStart="暂未开始，开始时间:"+ item.startDay +"<br>"
 			}
-			desc.html(doingStart +num);
+			
+			if(flag < 0){
+				doingStart="已经结束，结束时间:"+ item.endDay +"<br>"
+			}
+			
+			var type='';
+			if(item.type==1){
+				type="单选"
+			}else{
+				type="多选";
+			}
+			
+			//type += " , 共有" +item.optionNum+ "个选项";
+			
+			desc.html(doingStart +num + "<br>"+type);
 			//设置标题
 			var title= col.find("h4");
 			title.html(item.titile);
 			//设置链接
 			var a= col.find("a");
+			
+			a.attr("target","_blank");
 			//console.log(item);
 			
 			if(item.voted){
 				a.html("查看结果");
 				a.attr("href","voted/result?id=" + item.id );
 			}else{
-				a.addClass("breath");
-				a.attr("href","vote/view?id=" + item.id );
+				if(flag<0){
+					a.html("已截止/查看结果");
+					a.attr("href","voted/result?id=" + item.id );
+				}else{
+					a.addClass("breath");
+					a.attr("href","vote/view?id=" + item.id );
+				}
+			
 			}
 			return col;
 		}	

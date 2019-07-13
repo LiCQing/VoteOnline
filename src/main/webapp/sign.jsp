@@ -11,7 +11,7 @@
 <script src="js/login.js"></script>
 <link rel="stylesheet" href="css/login.css">
 	
-	
+	<title>Welcome</title>
 <%@ include file="component/header.jsp" %>
 
 
@@ -116,6 +116,11 @@
 				$(".active-tab span").html(activeTab);
 				$(".previous-tab span").html(previousTab);
 			});
+			
+			
+			$(".img_verify").attr('src',"sign/verify?t=" + new Date().getTime());
+			$(".img_verify").attr('src','');
+			
 		});
 	</script>
 </body>

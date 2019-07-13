@@ -87,6 +87,7 @@ public class VoteSubject {
 	}
 
 	public void setOptionList(List<VoteOption> optionList) {
+		this.optionNum = optionList.size();
 		this.optionList = optionList;
 	}
 

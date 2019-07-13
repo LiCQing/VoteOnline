@@ -8,6 +8,7 @@ import com.jsu.dao.SOIDao;
 import com.jsu.pojo.VoteSubject;
 import com.jsu.to.HighchartsResult;
 import com.jsu.to.OptionAnalyze;
+import com.jsu.util.DateUtil;
 import com.jsu.util.DbTable;
 import com.jsu.util.JdbcUtil;
 import com.jsu.util.SqlExcute;
@@ -19,7 +20,7 @@ public class SOIDaoImpl  implements SOIDao{
 	@Override
 	public List<VoteSubject> getHotList() throws Exception {
 		SqlExcute exe = new SqlExcute(JdbcUtil.getConnection());
-		ResultSet rs = exe.ExecuteQuery(DbTable.GET_HOT_SUBJECT);
+		ResultSet rs = exe.ExecuteQuery(DbTable.GET_HOT_SUBJECT,DateUtil.getTimestamp());
 		List<VoteSubject> list = new ArrayList<>();
 		while(rs.next()){
 			list.add(rsToVoteSubject(rs));

@@ -24,7 +24,7 @@ public class DateUtil {
 	public static String MilinsecondsToStringDate(long seconds) {
 		String res;
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		Date date = new Date(seconds);
+		Date date = new Date(seconds*1000);
 		res = simpleDateFormat.format(date);
 		return res;
 	}
